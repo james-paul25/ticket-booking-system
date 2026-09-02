@@ -23,8 +23,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function loadProfile(userId: string) {
-    const { data } = await supabase.from("profiles").select("*").eq("id", userId).single();
-    setProfile((data as Profile) ?? null);
+    const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).single();
+
+    if (data) {
+      setProfile(data as Profile);
+      return;
+    }
+
+    // Self-heal: no profile row exists yet (e.g. the handle_new_user trigger
+    // didn't fire for this account). Create it now from the auth user's own
+    // metadata instead of leaving the account permanently profile-less.
+    if (error?.code === "PGRST116") {
+      const { data: authUser } = await supabase.auth.getUser();
+      const meta = authUser.user?.user_metadata ?? {};
+      const { data: created, error: insertError } = await supabase
+        .from("profiles")
+        .insert({
+          id: userId,
+          full_name: meta.full_name ?? "New User",
+          email: authUser.user?.email ?? "",
+          phone: meta.phone ?? null,
+          role: "customer",
+        })
+        .select()
+        .single();
+
+      if (!insertError) {
+        setProfile(created as Profile);
+        return;
+      }
+    }
+
+    setProfile(null);
   }
 
   useEffect(() => {
