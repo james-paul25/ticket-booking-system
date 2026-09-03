@@ -22,14 +22,36 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const css = document.createElement("style");
+    css.type = "text/css";
+    css.appendChild(
+      document.createTextNode(
+        `*, *::before, *::after {
+           -webkit-transition: none !important;
+           -moz-transition: none !important;
+           -o-transition: none !important;
+           -ms-transition: none !important;
+           transition: none !important;
+        }`
+      )
+    );
+    document.head.appendChild(css);
+
     root.classList.toggle("dark", theme === "dark");
     window.localStorage.setItem(STORAGE_KEY, theme);
+
+    window.getComputedStyle(css).opacity;
+    document.head.removeChild(css);
   }, [theme]);
+
+  function toggleTheme() {
+    setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
+  }
 
   const value: ThemeContextValue = {
     theme,
     setTheme: setThemeState,
-    toggleTheme: () => setThemeState((t) => (t === "light" ? "dark" : "light")),
+    toggleTheme,
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
