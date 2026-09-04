@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 const links = [
   { to: "/admin", label: "Dashboard", end: true },
@@ -12,6 +12,8 @@ const links = [
 ];
 
 export function AdminLayout() {
+  const location = useLocation();
+
   return (
     <div className="grid md:grid-cols-[200px_1fr] gap-6">
       <aside className="card p-3 h-fit md:sticky md:top-20">
@@ -34,7 +36,7 @@ export function AdminLayout() {
           ))}
         </nav>
       </aside>
-      <div>
+      <div key={location.pathname} className="animate-page-fade w-full">
         <Outlet />
       </div>
     </div>

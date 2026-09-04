@@ -47,6 +47,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "booking-queue/:id",
+        element: (
+          <RequireAuth>
+            <BookingPage />
+          </RequireAuth>
+        ),
+      },
+      {
         path: "booking/:id/confirmation",
         element: (
           <RequireAuth>
