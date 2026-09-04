@@ -10,4 +10,6 @@ export interface Payment {
   transaction_reference: string;
   paid_at: string | null;
   created_at: string;
+  user?: { email: string; full_name?: string | null };
+  booking?: { booking_reference: string };
 }

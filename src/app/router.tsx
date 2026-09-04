@@ -25,16 +25,16 @@ import { AdminPaymentsPage } from "@/pages/admin/AdminPaymentsPage";
 import { AdminQueuePage } from "@/pages/admin/AdminQueuePage";
 import { AdminProcessingLogsPage } from "@/pages/admin/AdminProcessingLogsPage";
 import { SequentialDemoPage } from "@/pages/admin/SequentialDemoPage";
+import { AdminFleetPage } from "@/pages/admin/AdminFleetPage";
 
 export const router = createBrowserRouter([
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <RegisterPage /> },
   {
     path: "/",
     element: <AppLayout />,
     children: [
       { index: true, element: <LandingPage /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "register", element: <RegisterPage /> },
-
       { path: "schedules", element: <SchedulesPage /> },
       { path: "schedules/:id", element: <ScheduleDetailPage /> },
 
@@ -104,6 +104,7 @@ export const router = createBrowserRouter([
           { path: "queue", element: <AdminQueuePage /> },
           { path: "processing-logs", element: <AdminProcessingLogsPage /> },
           { path: "sequential-demo", element: <SequentialDemoPage /> },
+          { path: "fleet", element: <AdminFleetPage /> },
         ],
       },
 

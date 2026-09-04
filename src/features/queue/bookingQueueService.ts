@@ -58,13 +58,15 @@ export const bookingQueueService = {
     return data as BookingQueueRequest;
   },
 
-  /** Full queue (for the admin/queue UI and the demo page), oldest first. */
   async listAll(scheduleId?: string): Promise<BookingQueueRequest[]> {
-    let query = supabase.from("booking_queue").select("*").order("request_number", { ascending: true });
+    let query = supabase
+      .from("booking_queue")
+      .select("*, schedule:schedules(origin, destination, vehicle_name), seat:seats(seat_number), user:profiles(email, full_name)")
+      .order("request_number", { ascending: true });
     if (scheduleId) query = query.eq("schedule_id", scheduleId);
     const { data, error } = await query;
     if (error) throw new Error(error.message);
-    return data as BookingQueueRequest[];
+    return data as unknown as BookingQueueRequest[];
   },
 
   /** Processing log timeline, oldest first — proves the sequential order. */

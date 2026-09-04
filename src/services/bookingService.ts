@@ -34,11 +34,10 @@ export const bookingService = {
     return data as Booking;
   },
 
-  // --- Admin ---
   async listAll(): Promise<Booking[]> {
     const { data, error } = await supabase
       .from("bookings")
-      .select("*, schedule:schedules(*), seat:seats(*)")
+      .select("*, schedule:schedules(*), seat:seats(*), user:profiles(id, email, full_name)")
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return data as unknown as Booking[];

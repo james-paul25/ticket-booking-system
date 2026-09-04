@@ -14,9 +14,11 @@ export interface BookingQueueRequest {
   result_message: string | null;
   created_at: string;
   updated_at: string;
-  // Convenience fields joined in for display (populated client-side)
   customer_name?: string;
   seat_number?: string;
+  schedule?: { origin: string; destination: string; vehicle_name?: string };
+  seat?: { seat_number: string };
+  user?: { email: string; full_name?: string | null };
 }
 
 export type ProcessingLogAction =

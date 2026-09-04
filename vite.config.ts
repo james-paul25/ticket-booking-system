@@ -7,5 +7,8 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") }
   },
+  optimizeDeps: {
+    exclude: ["maplibre-gl"]
+  },
   server: { port: 5173, host: true }
 });

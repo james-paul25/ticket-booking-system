@@ -1,3 +1,4 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,6 +17,7 @@ html.dark {
 
 body {
   @apply bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-brand-500 selection:text-white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   max-width: 100%;
   touch-action: pan-y;
@@ -75,3 +77,61 @@ body {
   animation: pageFadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: opacity, transform;
 }
+
+/* ─── Slashed Polygon Reveal Animation (middle to right) ─── */
+@keyframes slashPolygonReveal {
+  0% {
+    -webkit-clip-path: polygon(9% 0%, 9% 0%, 0% 100%, 0% 100%);
+    clip-path: polygon(9% 0%, 9% 0%, 0% 100%, 0% 100%);
+  }
+  100% {
+    -webkit-clip-path: polygon(9% 0%, 100% 0%, 100% 100%, 0% 100%);
+    clip-path: polygon(9% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+}
+
+.animate-slash-reveal {
+  -webkit-clip-path: polygon(9% 0%, 9% 0%, 0% 100%, 0% 100%);
+  clip-path: polygon(9% 0%, 9% 0%, 0% 100%, 0% 100%);
+  animation: slashPolygonReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+  will-change: clip-path;
+}
+
+.slash-revealed {
+  -webkit-clip-path: polygon(9% 0%, 100% 0%, 100% 100%, 0% 100%);
+  clip-path: polygon(9% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/* ─── Soft Slow Fade Drop In ─── */
+@keyframes softFadeDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-drop {
+  animation: softFadeDrop 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+.delay-75 {
+  animation-delay: 75ms;
+}
+.delay-150 {
+  animation-delay: 150ms;
+}
+.delay-250 {
+  animation-delay: 250ms;
+}
+.delay-350 {
+  animation-delay: 350ms;
+}
+.delay-450 {
+  animation-delay: 450ms;
+}
+

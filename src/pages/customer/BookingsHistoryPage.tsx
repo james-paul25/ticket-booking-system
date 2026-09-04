@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Ship, ArrowRight, Calendar, Ticket, ChevronRight } from "lucide-react";
+import { Ship, ArrowRight, Calendar, Ticket, ChevronRight, Anchor } from "lucide-react";
 import { bookingService } from "@/services/bookingService";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 
@@ -108,16 +108,20 @@ export function BookingsHistoryPage() {
       )}
 
       {!isLoading && filteredBookings.length === 0 && (
-        <div className="card p-10 text-center space-y-3 border-slate-200 dark:border-slate-800 shadow-xs">
-          <Ticket size={36} className="mx-auto text-slate-400" />
-          <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
-            No {activeTab} bookings found
-          </h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Ready to plan your next voyage? Browse available sea routes and book your seat with instant confirmation.
-          </p>
+        <div className="card p-12 text-center space-y-4 border-slate-200 dark:border-slate-800">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto">
+            <Anchor size={28} className="text-slate-400" />
+          </div>
+          <div className="space-y-1.5">
+            <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
+              No {activeTab === "all" ? "" : activeTab} trips yet
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+              Ready to sail? Browse available routes and reserve your seat with instant confirmation.
+            </p>
+          </div>
           <Link to="/schedules" className="btn-primary !py-2.5 !px-5 text-xs font-black inline-flex">
-            Browse All Schedules
+            <Ship size={14} /> Browse Sailings
           </Link>
         </div>
       )}
@@ -133,7 +137,15 @@ export function BookingsHistoryPage() {
           return (
             <div
               key={booking.id}
-              className="card card-hover p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-5 border-slate-200 dark:border-slate-800 shadow-xs"
+              className={`card card-hover p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-5 shadow-xs border-l-4 ${
+                booking.booking_status === "confirmed"
+                  ? "border-l-emerald-500 border-y-slate-200 border-r-slate-200 dark:border-y-slate-800 dark:border-r-slate-800"
+                  : booking.booking_status === "pending"
+                  ? "border-l-amber-400 border-y-slate-200 border-r-slate-200 dark:border-y-slate-800 dark:border-r-slate-800"
+                  : booking.booking_status === "cancelled" || booking.booking_status === "failed"
+                  ? "border-l-red-400 border-y-slate-200 border-r-slate-200 dark:border-y-slate-800 dark:border-r-slate-800"
+                  : "border-l-slate-300 border-y-slate-200 border-r-slate-200 dark:border-l-slate-600 dark:border-y-slate-800 dark:border-r-slate-800"
+              }`}
             >
               <div className="space-y-3.5 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center justify-between gap-2">
