@@ -28,7 +28,7 @@ export function LandingPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [fromCity, setFromCity] = useState("Tagbilaran");
+  const [fromCity, setFromCity] = useState("Tagbilaran Port");
   const [toCity, setToCity] = useState("");
   const [travelDate, setTravelDate] = useState("");
 
@@ -81,10 +81,10 @@ export function LandingPage() {
       <section className="relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
         <div className="max-w-2xl mx-auto text-center space-y-2 mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100">
-            Where are you heading next?
+            Where are you sailing next?
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Search scheduled express trips with instant seat selection across Bohol.
+            Search scheduled ferry and fastcraft trips with instant seat selection across Bohol's waters.
           </p>
         </div>
 
@@ -94,11 +94,11 @@ export function LandingPage() {
               <MapPin size={18} className="text-slate-700 dark:text-slate-300 shrink-0" />
               <div className="w-full">
                 <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block leading-none mb-1">
-                  Departure From
+                  Departure Port
                 </label>
                 <input
                   type="text"
-                  placeholder="Origin terminal (e.g. Tagbilaran)"
+                  placeholder="Origin port (e.g. Tagbilaran Port)"
                   value={fromCity}
                   onChange={(e) => setFromCity(e.target.value)}
                   className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 outline-none"
@@ -121,11 +121,11 @@ export function LandingPage() {
               <MapPin size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
               <div className="w-full">
                 <label className="text-[10px] uppercase font-black tracking-wider text-slate-400 block leading-none mb-1">
-                  Arrival Destination
+                  Arrival Port
                 </label>
                 <input
                   type="text"
-                  placeholder="Destination (e.g. Balilihan, Carmen, Tubigon)"
+                  placeholder="Destination (e.g. Cebu City, Cagayan De Oro, Siquijor, etc.)"
                   value={toCity}
                   onChange={(e) => setToCity(e.target.value)}
                   className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 outline-none"
@@ -164,7 +164,7 @@ export function LandingPage() {
                   </div>
                 ) : (
                   <span className="text-[11px] font-medium text-slate-400">
-                    All upcoming dates
+                    All upcoming sailings
                   </span>
                 )}
               </div>
@@ -174,7 +174,7 @@ export function LandingPage() {
               type="submit"
               className="btn-primary !py-3 w-full font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-98"
             >
-              <Search size={16} /> Search Trips
+              <Search size={16} /> Search Sailings
             </button>
           </div>
         </form>
@@ -188,14 +188,14 @@ export function LandingPage() {
             </span>
             <div className="flex items-center gap-2">
               <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100">
-                Explore All Available Trips
+                Explore All Available Sailings
               </h2>
               <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
                 {schedules?.length ?? 5} routes
               </span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Browse timetables, check live seat availability, and book direct routes across Bohol.
+              Browse sailing schedules, check live seat availability, and book direct ferry routes across Bohol.
             </p>
           </div>
 
@@ -211,18 +211,18 @@ export function LandingPage() {
           <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
-                Express Van Fleet
+                Fastcraft Fleet
               </span>
               <span className="text-xs font-mono font-bold text-slate-500">
-                15 Seats Max
+                150 Passengers Max
               </span>
             </div>
             <div>
               <h3 className="font-black text-base text-slate-900 dark:text-slate-100">
-                Bohol Express Vans
+                Bohol Fastcraft Ferries
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Hiace Commuter routes connecting Tagbilaran, Balilihan, and Carmen terminals.
+                High-speed passenger crossings connecting Tagbilaran Port, Jagna Port, and Ubay Port.
               </p>
             </div>
             <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-xs">
@@ -236,18 +236,18 @@ export function LandingPage() {
           <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                Ceres & Shuttle Fleet
+                RoRo & Inter-Island Fleet
               </span>
               <span className="text-xs font-mono font-bold text-slate-500">
-                45 Seats Coach
+                450 Passenger Vessel
               </span>
             </div>
             <div>
               <h3 className="font-black text-base text-slate-900 dark:text-slate-100">
-                Ceres Liner & Shuttle Buses
+                RoRo Vessels & Inter-Island Liners
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Spacious coach routes serving Tubigon port, Loboc tourism hub, and Tagbilaran.
+                Spacious roll-on/roll-off routes serving Tubigon Port, Cebu, and Tagbilaran Port.
               </p>
             </div>
             <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-xs">
@@ -261,14 +261,14 @@ export function LandingPage() {
 
         <div className="pt-2">
           <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 block mb-2">
-            Popular Direct Destinations
+            Popular Direct Sea Routes
           </span>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
-              { origin: "Tagbilaran", dest: "Balilihan", fare: "₱150" },
-              { origin: "Tagbilaran", dest: "Carmen", fare: "₱220" },
-              { origin: "Tagbilaran", dest: "Tubigon", fare: "₱85" },
-              { origin: "Tagbilaran", dest: "Loboc", fare: "₱250" },
+              { origin: "Tagbilaran Port", dest: "Jagna Port", fare: "₱150" },
+              { origin: "Tagbilaran Port", dest: "Ubay Port", fare: "₱220" },
+              { origin: "Tagbilaran Port", dest: "Tubigon Port", fare: "₱85" },
+              { origin: "Tagbilaran Port", dest: "Cebu City", fare: "₱250" },
             ].map((route) => (
               <button
                 key={route.dest}

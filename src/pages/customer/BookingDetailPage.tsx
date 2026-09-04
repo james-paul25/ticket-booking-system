@@ -5,7 +5,7 @@ import {
   ArrowLeft,
   Ticket,
   AlertTriangle,
-  Bus,
+  Ship,
   ArrowRight,
 } from "lucide-react";
 import { bookingService } from "@/services/bookingService";
@@ -100,7 +100,7 @@ export function BookingDetailPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-slate-200/80 dark:bg-slate-700 flex items-center justify-center text-slate-800 dark:text-slate-200">
-                <Bus size={17} />
+                <Ship size={17} />
               </div>
               <span className="text-xs font-black text-slate-900 dark:text-slate-100">
                 {booking.schedule?.vehicle_name}
@@ -166,13 +166,13 @@ export function BookingDetailPage() {
 
         <div className="space-y-2.5 text-xs pt-1">
           <div className="flex justify-between py-1">
-            <span className="text-slate-500">Standard Trip Fare</span>
+            <span className="text-slate-500">Standard Voyage Fare</span>
             <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
               ₱{Number(booking.total_amount).toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between py-1 border-t border-slate-100 dark:border-slate-800">
-            <span className="text-slate-500">Booking & Terminal Fee</span>
+            <span className="text-slate-500">Booking & Port Fee</span>
             <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
               ₱0.00 (Waived)
             </span>
@@ -186,7 +186,7 @@ export function BookingDetailPage() {
 
           {booking.cancelled_at && (
             <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs">
-              <span className="font-bold block">Trip Cancelled</span>
+              <span className="font-bold block">Voyage Cancelled</span>
               <span>Cancelled on {new Date(booking.cancelled_at).toLocaleString()}</span>
             </div>
           )}

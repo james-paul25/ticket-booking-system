@@ -8,7 +8,7 @@ import {
   Calendar,
   RotateCcw,
   ChevronRight,
-  Bus,
+  Ship,
 } from "lucide-react";
 import { scheduleService } from "@/services/scheduleService";
 import { supabase } from "@/services/supabase";
@@ -34,7 +34,7 @@ export function SchedulesPage() {
   const [origin, setOrigin] = useState(searchParams.get("origin") ?? "");
   const [destination, setDestination] = useState(searchParams.get("destination") ?? "");
   const [selectedDate, setSelectedDate] = useState(searchParams.get("date") ?? "");
-  const [vehicleType, setVehicleType] = useState<"van" | "bus">("van");
+  const [vehicleType, setVehicleType] = useState<"fastcraft" | "roro">("fastcraft");
 
   const filters: ScheduleFilters = useMemo(
     () => ({
@@ -125,7 +125,7 @@ export function SchedulesPage() {
     setOrigin("");
     setDestination("");
     setSelectedDate("");
-    setVehicleType("van");
+    setVehicleType("fastcraft");
     setSearchParams(new URLSearchParams());
   }
 
@@ -133,20 +133,22 @@ export function SchedulesPage() {
     if (!rawSchedules) return [];
     let list = [...rawSchedules];
 
-    if (vehicleType === "van") {
+    if (vehicleType === "fastcraft") {
       list = list.filter(
         (s) =>
-          s.vehicle_name.toLowerCase().includes("van") ||
-          s.vehicle_name.toLowerCase().includes("hiace") ||
-          s.total_seats <= 20
+          s.vehicle_name.toLowerCase().includes("fastcraft") ||
+          s.vehicle_name.toLowerCase().includes("outrigger") ||
+          s.vehicle_name.toLowerCase().includes("ferry") ||
+          s.vehicle_name.toLowerCase().includes("oceanjet") ||
+          s.total_seats <= 150
       );
     } else {
       list = list.filter(
         (s) =>
-          s.vehicle_name.toLowerCase().includes("bus") ||
-          s.vehicle_name.toLowerCase().includes("ceres") ||
-          s.vehicle_name.toLowerCase().includes("shuttle") ||
-          s.total_seats > 20
+          s.vehicle_name.toLowerCase().includes("roro") ||
+          s.vehicle_name.toLowerCase().includes("liner") ||
+          s.vehicle_name.toLowerCase().includes("vessel") ||
+          s.total_seats > 150
       );
     }
 
@@ -160,10 +162,10 @@ export function SchedulesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
-            Available Trips & Schedules
+            Available Sailings & Schedules
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Real-time seat availability across Bohol transit lines.
+            Real-time seat availability across Bohol sea transit lines.
           </p>
         </div>
         {(origin || destination || selectedDate) && (
@@ -182,10 +184,10 @@ export function SchedulesPage() {
             <MapPin size={17} className="text-slate-700 dark:text-slate-300 shrink-0" />
             <div className="w-full">
               <span className="text-[10px] uppercase font-black text-slate-400 block leading-none mb-1">
-                From Terminal
+                From Port
               </span>
               <input
-                placeholder="Origin city/terminal"
+                placeholder="Origin city/port"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 outline-none"
@@ -211,7 +213,7 @@ export function SchedulesPage() {
                 To Destination
               </span>
               <input
-                placeholder="Destination terminal"
+                placeholder="Destination port"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 outline-none"
@@ -290,25 +292,25 @@ export function SchedulesPage() {
         <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
           <button
             type="button"
-            onClick={() => setVehicleType("van")}
+            onClick={() => setVehicleType("fastcraft")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              vehicleType === "van"
+              vehicleType === "fastcraft"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
-            Express Vans (15 Seats)
+            Ferry / OceanJet (150 Seats)
           </button>
           <button
             type="button"
-            onClick={() => setVehicleType("bus")}
+            onClick={() => setVehicleType("roro")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              vehicleType === "bus"
+              vehicleType === "roro"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
-            Buses (45 Seats)
+            RoRo Vessels (450 Seats)
           </button>
         </div>
       </div>
@@ -329,30 +331,30 @@ export function SchedulesPage() {
 
       {!isLoading && processedSchedules.length === 0 && (
         <div className="card p-10 text-center space-y-3 border-slate-200 dark:border-slate-800">
-          <Bus size={32} className="mx-auto text-slate-400" />
+          <Ship size={32} className="mx-auto text-slate-400" />
           <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
-            No scheduled trips found
+            No scheduled sailings found
           </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try choosing a different date, clearing terminal filters, or selecting another fleet type.
+            Try choosing a different date, clearing port filters, or selecting another vessel type.
           </p>
           <button
             type="button"
             onClick={handleResetFilters}
             className="btn-secondary !py-2 !px-4 text-xs font-bold"
           >
-            Show All Upcoming Trips
+            Show All Upcoming Sailings
           </button>
         </div>
       )}
 
       <div key={`${vehicleType}-${selectedDate}`} className="grid sm:grid-cols-2 gap-4 animate-page-fade">
         {processedSchedules.map((schedule) => {
-          const isBus =
-            schedule.vehicle_name.toLowerCase().includes("bus") ||
-            schedule.vehicle_name.toLowerCase().includes("ceres") ||
-            schedule.vehicle_name.toLowerCase().includes("shuttle") ||
-            schedule.total_seats > 20;
+          const isRoro =
+            schedule.vehicle_name.toLowerCase().includes("roro") ||
+            schedule.vehicle_name.toLowerCase().includes("liner") ||
+            schedule.vehicle_name.toLowerCase().includes("vessel") ||
+            schedule.total_seats > 150;
 
           const isFull = schedule.available_seats <= 0;
           const isLow = schedule.available_seats > 0 && schedule.available_seats <= 4;
@@ -367,12 +369,12 @@ export function SchedulesPage() {
                   <div className="flex items-center gap-2">
                     <span
                       className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border ${
-                        isBus
+                        isRoro
                           ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800"
                           : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700"
                       }`}
                     >
-                      {isBus ? "Ceres / Bus" : "Express Van"}
+                      {isRoro ? "RoRo / Liner" : "Ferry / Fastcraft"}
                     </span>
                     <span className="font-mono text-xs font-black px-2 py-0.5 rounded bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 tracking-wider">
                       {schedule.vehicle_number}
@@ -445,7 +447,7 @@ export function SchedulesPage() {
               <div className="flex items-center justify-between pt-3.5 mt-3 border-t border-slate-100 dark:border-slate-800">
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block leading-none mb-0.5">
-                    Trip Fare
+                    Voyage Fare
                   </span>
                   <span className="text-xl font-black font-mono text-slate-950 dark:text-white">
                     ₱{Number(schedule.price).toFixed(2)}

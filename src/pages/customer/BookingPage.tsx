@@ -128,7 +128,7 @@ export function BookingPage() {
           <ChevronLeft size={16} /> Back to Seat Selection
         </Link>
         <span className="text-[11px] font-mono font-bold text-slate-400">
-          Trip Ref: {schedule.vehicle_number}
+          Voyage Ref: {schedule.vehicle_number}
         </span>
       </div>
 
@@ -144,7 +144,7 @@ export function BookingPage() {
             {stage === "error" && "Checkout Interrupted"}
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            {stage === "review" && "Verify your passenger and travel details before confirming."}
+            {stage === "review" && "Verify your passenger and voyage details before confirming."}
             {stage === "waiting" && "Processing your reservation with guaranteed seat availability."}
             {stage === "success" && "Your digital boarding pass is ready."}
           </p>
@@ -231,14 +231,14 @@ export function BookingPage() {
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">
-                      Cash at Terminal Only
+                      Cash at Pier Only
                     </span>
                     <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                       Policy
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
-                    Pay in cash at the terminal ticketing counter prior to boarding. Instant seat reservation is confirmed immediately.
+                    Pay in cash at the port ticketing counter prior to boarding. Instant seat reservation is confirmed immediately.
                   </p>
                 </div>
               </div>
@@ -252,7 +252,7 @@ export function BookingPage() {
                 </span>
               </div>
               <div className="flex justify-between text-slate-500">
-                <span>Terminal & Booking Fee</span>
+                <span>Port & Booking Fee</span>
                 <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                   ₱0.00 (Free)
                 </span>
@@ -332,7 +332,7 @@ export function BookingPage() {
                 Seat {seat.seat_number} Successfully Booked!
               </h3>
               <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                Reservation confirmed. Please present your digital boarding pass and pay cash at the terminal gate.
+                Reservation confirmed. Please present your digital boarding pass and pay cash at the pier gate.
               </p>
             </div>
             <button
