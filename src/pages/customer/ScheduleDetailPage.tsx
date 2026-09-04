@@ -43,7 +43,7 @@ export function ScheduleDetailPage() {
     return (
       <div className="max-w-4xl mx-auto py-16 text-center space-y-4">
         <div className="w-10 h-10 border-3 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-sm text-slate-500">Loading schedule details…</p>
+        <p className="text-sm text-slate-500">Loading voyage details…</p>
       </div>
     );
   }
@@ -53,9 +53,9 @@ export function ScheduleDetailPage() {
       <div className="max-w-md mx-auto card p-8 text-center space-y-4 my-12">
         <AlertCircle size={40} className="mx-auto text-amber-500" />
         <h2 className="text-xl font-semibold">Schedule Not Found</h2>
-        <p className="text-sm text-slate-500">This trip schedule may have departed or is no longer open.</p>
+        <p className="text-sm text-slate-500">This voyage schedule may have departed or is no longer open.</p>
         <Link to="/schedules" className="btn-primary w-full">
-          Browse Available Trips
+          Browse Available Sailings
         </Link>
       </div>
     );
@@ -102,7 +102,7 @@ export function ScheduleDetailPage() {
                 Departure
               </span>
               <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                Origin
+                Origin Port
               </span>
             </div>
             <div className="text-3xl font-black text-slate-900 dark:text-slate-100 font-mono tracking-tight leading-none my-1.5">
@@ -119,7 +119,7 @@ export function ScheduleDetailPage() {
                 Arrival
               </span>
               <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400">
-                Destination (Est.)
+                Destination Port (Est.)
               </span>
             </div>
             <div className="text-3xl font-black text-slate-900 dark:text-slate-100 font-mono tracking-tight leading-none my-1.5">
@@ -144,7 +144,7 @@ export function ScheduleDetailPage() {
           {seatsLoading ? (
             <div className="py-20 text-center space-y-3">
               <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-xs text-slate-400">Loading interactive bus layout…</p>
+              <p className="text-xs text-slate-400">Loading interactive vessel layout…</p>
             </div>
           ) : seats ? (
             <SeatMap
@@ -221,7 +221,7 @@ export function ScheduleDetailPage() {
               </div>
 
               <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-slate-500 dark:text-slate-400 font-medium">Trip Fare</span>
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Voyage Fare</span>
                 <span className="font-mono font-black text-xl text-slate-900 dark:text-slate-100">
                   ₱{selectedSeat ? Number(selectedSeat.price).toFixed(2) : Number(schedule.price).toFixed(2)}
                 </span>

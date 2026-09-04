@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { Bus, LogOut, LayoutDashboard, UserCircle2, Menu, X, Compass, Ticket, Home, Moon, Sun } from "lucide-react";
+import {
+  Anchor, LogOut, LayoutDashboard, UserCircle2,
+  Menu, X, Compass, Ticket, Home, Moon, Sun,
+  
+} from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useTheme } from "@/app/ThemeContext";
 
@@ -29,7 +33,7 @@ export function AppLayout() {
               title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
               className="relative w-10 h-10 rounded-2xl flex items-center justify-center bg-brand-600 dark:bg-slate-900 text-white dark:text-cyan-400 border border-brand-500 dark:border-slate-700 active:scale-90 transition-transform"
             >
-              <Bus size={20} />
+              <Anchor size={20} />
               <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-amber-500 dark:text-cyan-300">
                 {theme === "dark" ? <Moon size={9} strokeWidth={2.5} /> : <Sun size={9} strokeWidth={2.5} />}
               </div>
@@ -40,7 +44,7 @@ export function AppLayout() {
                 SeqBook
               </span>
               <span className="text-[10px] font-bold text-brand-600 dark:text-cyan-400/80 uppercase tracking-widest leading-none">
-                Transit
+                SeaTransit
               </span>
             </Link>
           </div>

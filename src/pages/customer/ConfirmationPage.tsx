@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   Printer,
   ArrowRight,
-  Bus,
+  Ship,
   ShieldCheck,
   QrCode,
 } from "lucide-react";
@@ -48,7 +48,7 @@ export function ConfirmationPage() {
         <h2 className="text-xl font-black text-slate-900 dark:text-slate-100">Booking Not Found</h2>
         <p className="text-xs text-slate-500">We could not locate this booking record.</p>
         <Link to="/schedules" className="btn-primary w-full">
-          Browse Available Trips
+          Browse Available Sailings
         </Link>
       </div>
     );
@@ -63,7 +63,7 @@ export function ConfirmationPage() {
           Boarding Pass
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Show this digital pass upon boarding at the terminal gate.
+          Show this digital pass upon boarding at the pier gate.
         </p>
       </div>
 
@@ -75,21 +75,21 @@ export function ConfirmationPage() {
           <div className="flex items-center justify-between gap-3 mb-5">
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shrink-0">
-                <Bus size={20} />
+                <Ship size={20} />
               </div>
               <div className="min-w-0">
                 <span className="font-black text-sm sm:text-base text-slate-900 dark:text-slate-100 truncate block leading-tight">
-                  {booking.schedule?.vehicle_name ?? "Bohol Express Transit"}
+                  {booking.schedule?.vehicle_name ?? "Bohol Sea Transit"}
                 </span>
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block mt-0.5">
-                  Official Transport Carrier
+                  Official Sea Transport Carrier
                 </span>
               </div>
             </div>
 
             <div className="flex flex-col items-end shrink-0">
               <span className="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 tracking-wider leading-none mb-1">
-                Vehicle Plate
+                Vessel Registry
               </span>
               <div className="px-3 py-1 rounded-md bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 font-mono font-black text-xs sm:text-sm tracking-widest border border-slate-700 shadow-xs">
                 {booking.schedule?.vehicle_number}
@@ -100,7 +100,7 @@ export function ConfirmationPage() {
           <div className="flex items-baseline justify-between pt-2">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-0.5">
-                Departure Terminal
+                Departure Port
               </span>
               <span className="font-mono text-3xl sm:text-4xl font-black text-slate-950 dark:text-white block leading-tight">
                 {booking.schedule?.departure_time?.slice(0, 5)}
@@ -127,7 +127,7 @@ export function ConfirmationPage() {
 
             <div className="text-right">
               <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-0.5">
-                Arrival Terminal
+                Arrival Port
               </span>
               <span className="font-mono text-3xl sm:text-4xl font-black text-slate-950 dark:text-white block leading-tight">
                 {booking.schedule?.arrival_time?.slice(0, 5)}
@@ -221,7 +221,7 @@ export function ConfirmationPage() {
         <div className="bg-slate-50/80 dark:bg-slate-950/50 px-6 py-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-1.5">
             <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
-            <span className="font-medium">Official Digital Transit Pass</span>
+            <span className="font-medium">Official Digital Sea Transit Pass</span>
           </div>
           <span className="font-mono text-[10px]">Non-Transferable · Single Entry</span>
         </div>
@@ -239,7 +239,7 @@ export function ConfirmationPage() {
           to="/schedules"
           className="btn-primary flex-1 !py-3 font-black text-xs flex items-center justify-center gap-2"
         >
-          Book Another Trip <ArrowRight size={15} />
+          Book Another Voyage <ArrowRight size={15} />
         </Link>
       </div>
     </div>

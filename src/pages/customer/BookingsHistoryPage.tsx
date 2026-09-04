@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Bus, ArrowRight, Calendar, Ticket, ChevronRight } from "lucide-react";
+import { Ship, ArrowRight, Calendar, Ticket, ChevronRight } from "lucide-react";
 import { bookingService } from "@/services/bookingService";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 
@@ -49,7 +49,7 @@ export function BookingsHistoryPage() {
   ).length ?? 0;
 
   const tabs: { key: ActivityTab; label: string; badge?: number }[] = [
-    { key: "upcoming", label: "Upcoming Trips", badge: upcomingCount > 0 ? upcomingCount : undefined },
+    { key: "upcoming", label: "Upcoming Sailings", badge: upcomingCount > 0 ? upcomingCount : undefined },
     { key: "completed", label: "Completed" },
     { key: "cancelled", label: "Cancelled" },
     { key: "all", label: "All Activity" },
@@ -63,14 +63,14 @@ export function BookingsHistoryPage() {
             Activity & Bookings
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Manage your transit passes, boarding history, and ticket receipts.
+            Manage your sea transit passes, boarding history, and ticket receipts.
           </p>
         </div>
         <Link
           to="/schedules"
           className="btn-primary !py-2.5 !px-5 text-xs font-black self-start sm:self-auto flex items-center gap-2 shadow-xs"
         >
-          <Bus size={15} /> Book New Trip
+          <Ship size={15} /> Book New Voyage
         </Link>
       </div>
 
@@ -114,7 +114,7 @@ export function BookingsHistoryPage() {
             No {activeTab} bookings found
           </h3>
           <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Ready to plan your next travel? Browse available routes and book your seat with instant confirmation.
+            Ready to plan your next voyage? Browse available sea routes and book your seat with instant confirmation.
           </p>
           <Link to="/schedules" className="btn-primary !py-2.5 !px-5 text-xs font-black inline-flex">
             Browse All Schedules
@@ -124,11 +124,11 @@ export function BookingsHistoryPage() {
 
       <div key={activeTab} className="space-y-3.5 animate-page-fade">
         {filteredBookings.map((booking) => {
-          const isBus =
-            booking.schedule?.vehicle_name.toLowerCase().includes("bus") ||
-            booking.schedule?.vehicle_name.toLowerCase().includes("ceres") ||
-            booking.schedule?.vehicle_name.toLowerCase().includes("shuttle") ||
-            (booking.schedule?.total_seats ?? 0) > 20;
+          const isRoro =
+            booking.schedule?.vehicle_name.toLowerCase().includes("roro") ||
+            booking.schedule?.vehicle_name.toLowerCase().includes("liner") ||
+            booking.schedule?.vehicle_name.toLowerCase().includes("vessel") ||
+            (booking.schedule?.total_seats ?? 0) > 150;
 
           return (
             <div
@@ -140,7 +140,7 @@ export function BookingsHistoryPage() {
                   <div className="flex items-center gap-2">
                     <span
                       className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border ${
-                        isBus
+                        isRoro
                           ? "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800"
                           : "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700"
                       }`}
@@ -182,7 +182,7 @@ export function BookingsHistoryPage() {
                       />
                     </div>
                     <span className="text-[10px] font-mono font-bold text-slate-400">
-                      Express
+                      Non-Stop
                     </span>
                   </div>
 
