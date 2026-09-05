@@ -18,6 +18,7 @@ export interface Booking {
   // Optional joined data for detail views
   schedule?: Schedule;
   seat?: Seat;
+  user?: { id: string; email: string; full_name?: string | null };
 }
 
 export interface BookingCancellation {
