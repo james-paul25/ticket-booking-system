@@ -34,7 +34,7 @@ export function SchedulesPage() {
   const [origin, setOrigin] = useState(searchParams.get("origin") ?? "");
   const [destination, setDestination] = useState(searchParams.get("destination") ?? "");
   const [selectedDate, setSelectedDate] = useState(searchParams.get("date") ?? "");
-  const [vehicleType, setVehicleType] = useState<"fastcraft" | "roro">("fastcraft");
+  const [vehicleType, setVehicleType] = useState<"all" | "fastcraft" | "roro">("all");
 
   const filters: ScheduleFilters = useMemo(
     () => ({
@@ -125,31 +125,45 @@ export function SchedulesPage() {
     setOrigin("");
     setDestination("");
     setSelectedDate("");
-    setVehicleType("fastcraft");
+    setVehicleType("all");
     setSearchParams(new URLSearchParams());
   }
+
+  // Next Upcoming Departures: Immediate sailings for quick selection
+  const upcomingDepartures = useMemo(() => {
+    if (!rawSchedules || rawSchedules.length === 0) return [];
+    return rawSchedules.slice(0, 3);
+  }, [rawSchedules]);
 
   const processedSchedules = useMemo(() => {
     if (!rawSchedules) return [];
     let list = [...rawSchedules];
 
     if (vehicleType === "fastcraft") {
-      list = list.filter(
-        (s) =>
-          s.vehicle_name.toLowerCase().includes("fastcraft") ||
-          s.vehicle_name.toLowerCase().includes("outrigger") ||
-          s.vehicle_name.toLowerCase().includes("ferry") ||
-          s.vehicle_name.toLowerCase().includes("oceanjet") ||
-          s.total_seats <= 150
-      );
-    } else {
-      list = list.filter(
-        (s) =>
-          s.vehicle_name.toLowerCase().includes("roro") ||
-          s.vehicle_name.toLowerCase().includes("liner") ||
-          s.vehicle_name.toLowerCase().includes("vessel") ||
-          s.total_seats > 150
-      );
+      list = list.filter((s) => {
+        const name = s.vehicle_name.toLowerCase();
+        return (
+          name.includes("oceanjet") ||
+          name.includes("supercat") ||
+          name.includes("fastcat") ||
+          name.includes("island water") ||
+          name.includes("clemer") ||
+          name.includes("joy express") ||
+          name.includes("fastcraft")
+        );
+      });
+    } else if (vehicleType === "roro") {
+      list = list.filter((s) => {
+        const name = s.vehicle_name.toLowerCase();
+        return (
+          name.includes("lite ferry") ||
+          name.includes("super shuttle") ||
+          name.includes("medallion") ||
+          name.includes("trans-asia") ||
+          name.includes("roro") ||
+          name.includes("liner")
+        );
+      });
     }
 
     list.sort((a, b) => a.departure_time.localeCompare(b.departure_time));
@@ -165,7 +179,7 @@ export function SchedulesPage() {
             Available Sailings & Schedules
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Real-time seat availability across Bohol sea transit lines.
+            Real-time seat availability across Bohol maritime passenger corridors with scheduled ETAs.
           </p>
         </div>
         {(origin || destination || selectedDate) && (
@@ -178,6 +192,57 @@ export function SchedulesPage() {
         )}
       </div>
 
+      {/* ─── Featured Live Board: Next Upcoming Departures ─── */}
+      {upcomingDepartures.length > 0 && !origin && !destination && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-900 to-slate-900 text-white shadow-md space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <h2 className="text-xs sm:text-sm font-black uppercase tracking-wider text-emerald-400">
+                Next Upcoming Departures (Leaving Soonest)
+              </h2>
+            </div>
+            <span className="text-[11px] text-slate-300 font-medium hidden sm:inline">
+              Real-time maritime timetable
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            {upcomingDepartures.map((s) => (
+              <Link
+                key={s.id}
+                to={`/schedules/${s.id}`}
+                className="p-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 transition-all flex flex-col justify-between gap-2 group"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-[10px] font-bold mb-1">
+                    <span className="px-1.5 py-0.5 rounded bg-blue-500/30 text-blue-200 border border-blue-400/30">
+                      {s.vehicle_name}
+                    </span>
+                    <span className="text-emerald-400 font-semibold font-mono">
+                      ₱{Number(s.price).toFixed(2)}
+                    </span>
+                  </div>
+                  <p className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
+                    {s.origin.split(" ")[0]} → {s.destination.split(" ")[0]}
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-slate-300 pt-1.5 border-t border-white/10">
+                  <span className="font-mono">
+                    Dep: <strong>{s.departure_time.slice(0, 5)}</strong>
+                  </span>
+                  <span className="text-emerald-400 font-mono">
+                    ETA: <strong>{s.arrival_time.slice(0, 5)}</strong>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ─── Search & Date Filter Card ─── */}
       <div className="card p-4 sm:p-6 space-y-4 border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-11 gap-2.5 items-center">
           <div className="sm:col-span-5 flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
@@ -187,7 +252,7 @@ export function SchedulesPage() {
                 From Port
               </span>
               <input
-                placeholder="Origin city/port"
+                placeholder="Origin port (e.g. Tagbilaran, Tubigon, Getafe, Jagna, Ubay)"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
                 className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 outline-none"
@@ -213,7 +278,7 @@ export function SchedulesPage() {
                 To Destination
               </span>
               <input
-                placeholder="Destination port"
+                placeholder="Destination port (e.g. Cebu, Cordova, Siquijor, Camiguin, Bato)"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className="w-full bg-transparent text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 outline-none"
@@ -288,29 +353,41 @@ export function SchedulesPage() {
         </div>
       </div>
 
+      {/* ─── Vehicle Category Toggles ─── */}
       <div className="flex items-center justify-between gap-3 pt-2">
         <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
           <button
             type="button"
+            onClick={() => setVehicleType("all")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              vehicleType === "all"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs"
+                : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
+            }`}
+          >
+            All Vessels
+          </button>
+          <button
+            type="button"
             onClick={() => setVehicleType("fastcraft")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               vehicleType === "fastcraft"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
-            Ferry / OceanJet (150 Seats)
+            Fastcraft (OceanJet, SuperCat, FastCat, Island Water)
           </button>
           <button
             type="button"
             onClick={() => setVehicleType("roro")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               vehicleType === "roro"
                 ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
             }`}
           >
-            RoRo Vessels (450 Seats)
+            RoRo Liners (Lite Ferries, Super Shuttle, Medallion)
           </button>
         </div>
       </div>
@@ -399,6 +476,9 @@ export function SchedulesPage() {
                 <div className="space-y-1">
                   <div className="flex items-baseline justify-between">
                     <div>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                        Departure
+                      </span>
                       <span className="font-mono text-2xl sm:text-3xl font-black text-slate-950 dark:text-white block leading-tight">
                         {schedule.departure_time.slice(0, 5)}
                       </span>
@@ -423,6 +503,9 @@ export function SchedulesPage() {
                     </div>
 
                     <div className="text-right">
+                      <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block">
+                        Arrival (ETA)
+                      </span>
                       <span className="font-mono text-2xl sm:text-3xl font-black text-slate-950 dark:text-white block leading-tight">
                         {schedule.arrival_time.slice(0, 5)}
                       </span>
