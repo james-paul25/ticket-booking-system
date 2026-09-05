@@ -9,8 +9,8 @@ import { useAuth } from "@/features/auth/AuthContext";
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-150 ${
     isActive
-      ? "bg-blue-50 text-blue-600 font-bold"
-      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+      ? "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 font-bold"
+      : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
   }`;
 
 export function AppLayout() {
@@ -33,14 +33,14 @@ export function AppLayout() {
 
   return (
     <div
-      className="min-h-screen flex flex-col bg-white text-slate-900 w-full"
+      className="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 w-full transition-colors duration-200"
       style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}
     >
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-200 ${
           scrolled
-            ? "border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-sm"
-            : "border-b border-slate-100 bg-white"
+            ? "border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm"
+            : "border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950"
         }`}
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6 flex items-center justify-between h-16 gap-3">
@@ -54,10 +54,10 @@ export function AppLayout() {
                 <Ship size={19} strokeWidth={2.5} />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="font-bold text-sm tracking-tight text-slate-900">
+                <span className="font-bold text-sm tracking-tight text-slate-900 dark:text-slate-100">
                   SeqBook
                 </span>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">
+                <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5">
                   Bohol Sea Transit
                 </span>
               </div>
@@ -78,7 +78,7 @@ export function AppLayout() {
             )}
             {isAdmin && (
               <NavLink to="/admin" className={navLinkClass}>
-                <span className="inline-flex items-center gap-1.5 text-amber-600 font-semibold">
+                <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-semibold">
                   <LayoutDashboard size={14} />Admin
                 </span>
               </NavLink>
@@ -90,19 +90,19 @@ export function AppLayout() {
               <div className="flex items-center gap-1.5">
                 <Link
                   to="/profile"
-                  className="flex items-center gap-2 py-1.5 px-3 rounded-xl hover:bg-slate-50 border border-slate-200 text-xs font-semibold transition-colors duration-150"
+                  className="flex items-center gap-2 py-1.5 px-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition-colors duration-150"
                 >
                   <div className="w-5 h-5 rounded-md bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
                     {profile?.full_name?.charAt(0).toUpperCase() ?? <UserCircle2 size={12} />}
                   </div>
-                  <span className="hidden sm:inline text-slate-700">
+                  <span className="hidden sm:inline text-slate-700 dark:text-slate-300">
                     {profile?.full_name?.split(" ")[0] ?? "Account"}
                   </span>
                 </Link>
                 <button
                   onClick={() => signOut()}
                   title="Sign out"
-                  className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all duration-150"
+                  className="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all duration-150"
                 >
                   <LogOut size={15} />
                 </button>
@@ -111,7 +111,7 @@ export function AppLayout() {
               <div className="hidden sm:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="py-1.5 px-3.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-all"
+                  className="py-1.5 px-3.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                 >
                   Sign in
                 </Link>
@@ -126,7 +126,7 @@ export function AppLayout() {
 
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
-              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors ml-0.5"
+              className="md:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-0.5"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -139,20 +139,20 @@ export function AppLayout() {
           <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-3 space-y-1 animate-slide-up">
             <Link
               to="/"
-              className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <Home size={16} className="text-brand-600 dark:text-cyan-400" /> Home
             </Link>
             <Link
               to="/schedules"
-              className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               <Compass size={16} className="text-brand-600 dark:text-cyan-400" /> Available Trips
             </Link>
             {user && (
               <Link
                 to="/bookings"
-                className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <Ticket size={16} className="text-brand-600 dark:text-cyan-400" /> My Bookings & Passes
               </Link>
@@ -160,7 +160,7 @@ export function AppLayout() {
             {user && (
               <Link
                 to="/profile"
-                className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <UserCircle2 size={16} className="text-brand-600 dark:text-cyan-400" /> My Profile
               </Link>
