@@ -253,6 +253,23 @@ values
     295,
     420.00,
     'scheduled'
+  ),
+
+  -- Jagna Port ⇄ Cagayan de Oro Port (Light Ferries)
+  (
+    'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    'Jagna to Cagayan de Oro',
+    'Jagna Port',
+    'Cagayan de Oro Port',
+    current_date,
+    '22:00:00',
+    '04:00:00',
+    'Light Ferries 8',
+    'LF-08',
+    400,
+    370,
+    400.00,
+    'scheduled'
   )
 on conflict (id) do update set
   route_name = excluded.route_name,
@@ -268,7 +285,39 @@ on conflict (id) do update set
   price = excluded.price,
   status = excluded.status;
 
--- 3. Populate sample initial seats for scheduled ferry voyages (up to 40 per voyage for fast UI demonstration)
+-- 3. Populate recurring maritime crossings for the upcoming 7 days
+insert into schedules (
+  route_name,
+  origin,
+  destination,
+  departure_date,
+  departure_time,
+  arrival_time,
+  vehicle_name,
+  vehicle_number,
+  total_seats,
+  available_seats,
+  price,
+  status
+)
+select
+  s.route_name,
+  s.origin,
+  s.destination,
+  current_date + d as departure_date,
+  s.departure_time,
+  s.arrival_time,
+  s.vehicle_name,
+  s.vehicle_number,
+  s.total_seats,
+  s.available_seats,
+  s.price,
+  s.status
+from schedules s
+cross join generate_series(1, 6) as d
+where s.departure_date = current_date;
+
+-- 4. Populate sample initial seats for all scheduled voyages (up to 40 per voyage for fast UI demonstration)
 do $$
 declare
   v_schedule record;
@@ -276,7 +325,7 @@ declare
   v_seats_to_create int;
 begin
   for v_schedule in select id, price, total_seats from schedules loop
-    v_seats_to_create := least(v_schedule.total_seats, 50);
+    v_seats_to_create := least(v_schedule.total_seats, 40);
     for v_seat_num in 1..v_seats_to_create loop
       insert into seats (
         schedule_id,
@@ -297,7 +346,7 @@ begin
   end loop;
 end $$;
 
--- 4. Demo Concurrency test scenario: leave A1 available for the last-seat concurrency test on voyage 44444444-...
+-- 5. Demo Concurrency test scenario: leave A1 available for the last-seat concurrency test on voyage 44444444-...
 update seats
 set status = 'booked'
 where schedule_id = '44444444-4444-4444-4444-444444444444'

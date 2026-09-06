@@ -4,7 +4,6 @@ import { getRollingMaritimeSchedules } from "@/data/realSchedules";
 
 export const scheduleService = {
   async list(filters: ScheduleFilters = {}): Promise<Schedule[]> {
-    let dbSchedules: Schedule[] = [];
     try {
       let query = supabase.from("schedules").select("*").order("departure_date", { ascending: true });
 
@@ -15,14 +14,19 @@ export const scheduleService = {
       if (filters.onlyAvailable) query = query.gt("available_seats", 0);
 
       const { data, error } = await query;
-      if (!error && data) {
-        dbSchedules = data as Schedule[];
+      if (!error && data && data.length > 0) {
+        const sorted = (data as Schedule[]).sort((a, b) => {
+          const dateCompare = a.departure_date.localeCompare(b.departure_date);
+          if (dateCompare !== 0) return dateCompare;
+          return a.departure_time.localeCompare(b.departure_time);
+        });
+        return sorted;
       }
     } catch {
       // Fallback seamlessly to verified maritime registry if remote is unavailable
     }
 
-    // Load verified real-world maritime schedules across all 15 Bohol corridors
+    // Fallback only if database is completely empty or unreachable
     let maritimeList = getRollingMaritimeSchedules(14);
 
     if (filters.origin) {
@@ -43,19 +47,11 @@ export const scheduleService = {
       maritimeList = maritimeList.filter((s) => s.available_seats > 0);
     }
 
-    // Combine DB records with verified schedules, prioritizing DB edits if IDs match
-    const map = new Map<string, Schedule>();
-    maritimeList.forEach((s) => map.set(s.id, s));
-    dbSchedules.forEach((s) => map.set(s.id, s));
-
-    const combined = Array.from(map.values());
-    combined.sort((a, b) => {
+    return maritimeList.sort((a, b) => {
       const dateCompare = a.departure_date.localeCompare(b.departure_date);
       if (dateCompare !== 0) return dateCompare;
       return a.departure_time.localeCompare(b.departure_time);
     });
-
-    return combined;
   },
 
   async getById(id: string): Promise<Schedule | null> {
