@@ -94,6 +94,14 @@ const POPULAR_ROUTES = [
     vesselType: "Medallion RoRo",
     tag: "Eastern Leyte Link",
   },
+  {
+    origin: "Jagna Port",
+    dest: "Cagayan de Oro Port",
+    fare: "₱400.00",
+    duration: "6h 00m",
+    vesselType: "Light Ferries",
+    tag: "Busiest Route",
+  }
 ];
 
 const TARGET_TITLE = "Explore Bohol Crossings & Sea Routes";
