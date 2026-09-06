@@ -5,6 +5,7 @@ import {
   Menu, X, Compass, Ticket, Home,
 } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-150 ${
@@ -86,6 +87,8 @@ export function AppLayout() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
+
             {user ? (
               <div className="flex items-center gap-1.5">
                 <Link
@@ -173,6 +176,10 @@ export function AppLayout() {
                 <LayoutDashboard size={16} /> Admin Console
               </Link>
             )}
+            <div className="flex items-center justify-between py-2.5 px-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 my-1">
+              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Appearance</span>
+              <ThemeToggle />
+            </div>
             {!user && (
               <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <Link to="/login" className="btn-secondary flex-1 !py-2 !text-xs font-semibold">

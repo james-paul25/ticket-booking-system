@@ -9,6 +9,14 @@ html {
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
   max-width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 html.dark {
@@ -23,6 +31,14 @@ body {
   touch-action: pan-y;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 @layer components {
@@ -65,17 +81,15 @@ body {
 @keyframes pageFadeIn {
   0% {
     opacity: 0;
-    transform: translateY(10px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
 .animate-page-fade {
   animation: pageFadeIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  will-change: opacity, transform;
+  will-change: opacity;
 }
 
 /* ─── Slashed Polygon Reveal Animation (middle to right) ─── */
