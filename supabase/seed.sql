@@ -317,31 +317,54 @@ from schedules s
 cross join generate_series(1, 6) as d
 where s.departure_date = current_date;
 
--- 4. Populate sample initial seats for all scheduled voyages (up to 40 per voyage for fast UI demonstration)
+-- 4. Populate sample initial seats for all scheduled voyages (Economy & Business Class tiers)
 do $$
 declare
   v_schedule record;
-  v_seat_num int;
-  v_seats_to_create int;
+  v_row text;
+  v_col int;
 begin
   for v_schedule in select id, price, total_seats from schedules loop
-    v_seats_to_create := least(v_schedule.total_seats, 40);
-    for v_seat_num in 1..v_seats_to_create loop
-      insert into seats (
-        schedule_id,
-        seat_number,
-        seat_type,
-        price,
-        status
-      )
-      values (
-        v_schedule.id,
-        'A' || v_seat_num,
-        case when v_seat_num <= 8 then 'premium' else 'standard' end,
-        v_schedule.price,
-        'available'
-      )
-      on conflict (schedule_id, seat_number) do nothing;
+    -- 4a. Economy Class Deck: Rows A to F (24 seats per voyage)
+    foreach v_row in array array['A', 'B', 'C', 'D', 'E', 'F'] loop
+      for v_col in 1..4 loop
+        insert into seats (
+          schedule_id,
+          seat_number,
+          seat_type,
+          price,
+          status
+        )
+        values (
+          v_schedule.id,
+          v_row || v_col,
+          'economy',
+          v_schedule.price,
+          'available'
+        )
+        on conflict (schedule_id, seat_number) do nothing;
+      end loop;
+    end loop;
+
+    -- 4b. Business Class VIP Deck: Rows J to L (12 seats per voyage)
+    foreach v_row in array array['J', 'K', 'L'] loop
+      for v_col in 1..4 loop
+        insert into seats (
+          schedule_id,
+          seat_number,
+          seat_type,
+          price,
+          status
+        )
+        values (
+          v_schedule.id,
+          v_row || v_col,
+          'business',
+          round(v_schedule.price * 1.45, 2),
+          'available'
+        )
+        on conflict (schedule_id, seat_number) do nothing;
+      end loop;
     end loop;
   end loop;
 end $$;

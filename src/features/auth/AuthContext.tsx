@@ -10,7 +10,7 @@ interface AuthContextValue {
   loading: boolean;
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (input: { fullName: string; email: string; password: string; phone?: string }) => Promise<void>;
+  signUp: (input: { fullName: string; email: string; password: string; phone?: string; address?: string }) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -30,9 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Self-heal: no profile row exists yet (e.g. the handle_new_user trigger
-    // didn't fire for this account). Create it now from the auth user's own
-    // metadata instead of leaving the account permanently profile-less.
     if (error?.code === "PGRST116") {
       const { data: authUser } = await supabase.auth.getUser();
       const meta = authUser.user?.user_metadata ?? {};
@@ -58,9 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       setSession(data.session);
-      if (data.session?.user) loadProfile(data.session.user.id);
+      if (data.session?.user) {
+        await loadProfile(data.session.user.id);
+      }
       setLoading(false);
     });
 
@@ -83,11 +82,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw new Error(error.message);
     },
-    async signUp({ fullName, email, password, phone }) {
+    async signUp({ fullName, email, password, phone, address }) {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { full_name: fullName, phone: phone ?? null } },
+        options: { data: { full_name: fullName, phone: phone ?? null, address: address ?? null } },
       });
       if (error) throw new Error(error.message);
     },

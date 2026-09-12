@@ -137,7 +137,7 @@ export function BookingsHistoryPage() {
           return (
             <div
               key={booking.id}
-              className={`card card-hover p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-5 shadow-xs border-l-4 ${
+              className={`card card-hover p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-5 shadow-xs border-l-4 ${
                 booking.booking_status === "confirmed"
                   ? "border-l-emerald-500 border-y-slate-200 border-r-slate-200 dark:border-y-slate-800 dark:border-r-slate-800"
                   : booking.booking_status === "pending"
@@ -147,9 +147,11 @@ export function BookingsHistoryPage() {
                   : "border-l-slate-300 border-y-slate-200 border-r-slate-200 dark:border-l-slate-600 dark:border-y-slate-800 dark:border-r-slate-800"
               }`}
             >
-              <div className="space-y-3.5 flex-1 min-w-0">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
+              {/* Responsive Container: Horizontal on Desktop (lg:flex-row lg:items-center), Vertical on Phones (flex flex-col) */}
+              <div className="flex-1 flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6 min-w-0">
+                {/* 1. Vessel & Reference */}
+                <div className="space-y-1.5 lg:w-44 shrink-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span
                       className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md border ${
                         isRoro
@@ -159,32 +161,31 @@ export function BookingsHistoryPage() {
                     >
                       {booking.schedule?.vehicle_name}
                     </span>
-
                     <span className="font-mono text-xs font-black px-2 py-0.5 rounded bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 tracking-wider">
                       {booking.schedule?.vehicle_number}
                     </span>
                   </div>
-
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-slate-400">
-                      Ref #{booking.booking_reference}
+                    <span className="font-mono text-[11px] font-bold text-slate-400">
+                      #{booking.booking_reference}
                     </span>
                     <StatusBadge status={booking.booking_status} />
                   </div>
                 </div>
 
-                <div className="flex items-baseline justify-between max-w-lg">
+                {/* 2. Route & Transit Times */}
+                <div className="flex items-baseline justify-between lg:justify-start lg:gap-6 flex-1 min-w-0">
                   <div>
-                    <span className="font-mono text-2xl font-black text-slate-950 dark:text-white block leading-tight">
+                    <span className="font-mono text-xl sm:text-2xl font-black text-slate-950 dark:text-white block leading-tight">
                       {booking.schedule?.departure_time?.slice(0, 5)}
                     </span>
-                    <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block truncate max-w-[130px]">
                       {booking.schedule?.origin}
                     </span>
                   </div>
 
-                  <div className="flex flex-col items-center px-4">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest">
+                  <div className="flex flex-col items-center px-2">
+                    <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
                       Direct
                     </span>
                     <div className="w-12 sm:w-16 h-0.5 bg-slate-200 dark:bg-slate-700 my-1 relative">
@@ -193,36 +194,40 @@ export function BookingsHistoryPage() {
                         className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400"
                       />
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-slate-400">
+                    <span className="text-[9px] font-mono font-bold text-slate-400">
                       Non-Stop
                     </span>
                   </div>
 
-                  <div className="text-right">
-                    <span className="font-mono text-2xl font-black text-slate-950 dark:text-white block leading-tight">
+                  <div className="text-right lg:text-left">
+                    <span className="font-mono text-xl sm:text-2xl font-black text-slate-950 dark:text-white block leading-tight">
                       {booking.schedule?.arrival_time?.slice(0, 5)}
                     </span>
-                    <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block truncate max-w-[130px]">
                       {booking.schedule?.destination}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800/80">
+                {/* 3. Trip Date, Seat Badge, and Price */}
+                <div className="flex flex-wrap lg:flex-col lg:items-start gap-3 lg:gap-1 text-xs text-slate-500 dark:text-slate-400 lg:w-40 shrink-0 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800">
                   <span className="inline-flex items-center gap-1 font-medium">
                     <Calendar size={13} className="text-slate-400" />
                     {formatTripDate(booking.schedule?.departure_date)}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 font-mono font-black text-emerald-800 dark:text-emerald-300">
-                    Seat {booking.seat?.seat_number}
-                  </span>
-                  <span className="font-mono font-black text-slate-900 dark:text-slate-100 text-xs">
-                    ₱{Number(booking.total_amount).toFixed(2)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 font-mono font-black text-emerald-800 dark:text-emerald-300">
+                      Seat {booking.seat?.seat_number}
+                    </span>
+                    <span className="font-mono font-black text-slate-900 dark:text-slate-100 text-xs">
+                      ₱{Number(booking.total_amount).toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex sm:flex-col items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
+              {/* 4. Action Buttons */}
+              <div className="flex sm:flex-row lg:flex-col items-center gap-2 pt-2 sm:pt-0 border-t lg:border-t-0 border-slate-100 dark:border-slate-800 shrink-0">
                 <Link
                   to={`/booking/${booking.id}/confirmation`}
                   className="btn-primary !py-2 !px-4 text-xs font-black inline-flex items-center justify-center gap-1.5 w-full shadow-xs"

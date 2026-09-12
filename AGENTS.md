@@ -643,6 +643,14 @@ Keep motion subordinate to the task.
 
 Use motion as communication, not decoration.
 
+### Smooth In-and-Out Transitions Habit
+
+Make it a persistent habit across all UI components, modals, sidebars, and mode/deck switches to implement smooth, deliberate in-and-out transitions.
+
+* Avoid jarring instant cuts or overly twitchy micro-snaps.
+* For major contextual shifts, class changes, or mode switches (e.g., Economy Class ⇄ Business Class or modal entrances/exits), use gentle, deliberate transitions lasting between **1500ms and 2500ms** (e.g., `transition-all duration-[1500ms] ease-in-out` or multi-phase crossfades).
+* Give state changes breathing room so passengers perceive elegance, continuity, and clarity.
+
 ---
 
 # 25. TYPOGRAPHY

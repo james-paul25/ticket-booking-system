@@ -12,8 +12,6 @@ import {
   ListOrdered,
   Activity,
   ArrowRight,
-  ShieldCheck,
-  Zap,
   Ship,
 } from "lucide-react";
 import { supabase } from "@/services/supabase";
@@ -68,220 +66,234 @@ export function AdminDashboardPage() {
   const failed = queue?.filter((q) => q.status === "failed").length ?? 0;
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div data-testid="admin-overview" className="space-y-6 w-full min-w-0">
+      {/* ─── Page Header & Action Controls ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Admin Overview</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            Monitor real-time schedules, revenue, and sequential booking execution.
+          <h1 className="text-xl font-bold tracking-tight text-slate-950 dark:text-white">
+            Admin Overview
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Voyage operations, revenue performance, and sequential queue execution.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/admin/schedules/create"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200 transition-colors shadow-xs"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>New Schedule</span>
           </Link>
           <Link
             to="/admin/queue"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
           >
-            <ListOrdered className="h-3.5 w-3.5" />
+            <ListOrdered className="h-3.5 w-3.5 text-slate-500" />
             <span>View Queue</span>
           </Link>
           <Link
             to="/admin/fleet"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
           >
-            <Ship className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+            <Ship className="h-3.5 w-3.5 text-slate-500" />
             <span>Fleet Tracking</span>
           </Link>
           <Link
             to="/admin/sequential-demo"
-            className="btn-primary inline-flex items-center gap-1.5 text-xs py-2 shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-50 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
           >
-            <PlayCircle className="h-4 w-4" />
-            <span>5-Customer Demo</span>
+            <PlayCircle className="h-3.5 w-3.5 text-slate-500" />
+            <span>Sequential Demo</span>
           </Link>
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ─── Operational KPIs ─── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
           icon={CreditCard}
           label="Total Revenue"
           value={`₱${(stats?.totalRevenue ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-          badge="Live"
-          accent="text-emerald-600 dark:text-emerald-400"
-          bgAccent="bg-emerald-500/10"
+          badge="Gross"
         />
         <StatCard
           icon={Ticket}
           label="Confirmed Bookings"
           value={stats?.confirmed ?? "—"}
           badge={`${stats?.bookingsToday ?? 0} today`}
-          accent="text-brand-600 dark:text-brand-400"
-          bgAccent="bg-brand-500/10"
         />
         <StatCard
           icon={Calendar}
           label="Active Schedules"
           value={stats?.schedules ?? "—"}
-          accent="text-purple-600 dark:text-purple-400"
-          bgAccent="bg-purple-500/10"
         />
         <StatCard
           icon={Users}
           label="Registered Users"
           value={stats?.users ?? "—"}
-          accent="text-blue-600 dark:text-blue-400"
-          bgAccent="bg-blue-500/10"
         />
       </div>
 
-      <div className="card p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
-              <Zap className="h-5 w-5" />
-            </div>
-            <div>
-              <h2 className="font-semibold text-base">Sequential Processing Engine</h2>
-              <p className="text-xs text-slate-500">Live hardware execution pipeline enforcing single-transaction reservations</p>
-            </div>
+      {/* ─── Booking Queue Status (Clean, Operational, No Technical Jargon) ─── */}
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-4 sm:p-5 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Booking Queue Status
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Live state of inbound booking requests and queue throughput.
+            </p>
           </div>
           <Link
             to="/admin/processing-logs"
-            className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1"
+            className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
           >
-            <span>Audit Logs</span>
+            <span>Processing Logs</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Step 1 · Inbound Queue</span>
-              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                {pending} Waiting
+        <div className="grid sm:grid-cols-3 gap-3">
+          {/* Queued */}
+          <div className="p-3.5 rounded-lg border border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-900/40 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                Queued Requests
+              </span>
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-slate-200/80 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                FIFO
               </span>
             </div>
-            <div className="space-y-1">
-              <p className="text-2xl font-bold">{pending}</p>
-              <p className="text-xs text-slate-500">Oldest request claimed first via FIFO request order</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-100">
+                {pending}
+              </span>
+              <span className="text-xs text-slate-500">waiting</span>
             </div>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Requests claimed in arrival order.
+            </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col justify-between relative overflow-hidden">
-            {currentlyProcessing && (
-              <div className="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-brand-500 animate-pulse" />
-            )}
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Step 2 · Processing Slot</span>
+          {/* Active Processing Slot */}
+          <div className="p-3.5 rounded-lg border border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-900/40 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                Execution Slot
+              </span>
               {currentlyProcessing ? (
                 <StatusBadge status="processing" />
               ) : (
-                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                  Slot Idle
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                  Idle
                 </span>
               )}
             </div>
-            <div className="space-y-1">
-              <p className="text-2xl font-bold">
-                {currentlyProcessing ? `#${currentlyProcessing.request_number}` : "None Active"}
-              </p>
-              <p className="text-xs text-slate-500">
-                {currentlyProcessing
-                  ? `Checking seat ${currentlyProcessing.seat_id.slice(0, 8)}…`
-                  : "Ready for next queued request"}
-              </p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold font-mono text-slate-900 dark:text-slate-100">
+                {currentlyProcessing ? `#${currentlyProcessing.request_number}` : "Idle"}
+              </span>
             </div>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              {currentlyProcessing
+                ? `Allocating Seat ${currentlyProcessing.seat?.seat_number ?? currentlyProcessing.seat_id.slice(0, 8)}`
+                : "Ready for next inbound request."}
+            </p>
           </div>
 
-          <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Step 3 · Outcomes</span>
-              <span className="text-xs text-slate-400 font-mono">{queue?.length ?? 0} total</span>
+          {/* Outcomes */}
+          <div className="p-3.5 rounded-lg border border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-900/40 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                Queue Outcomes
+              </span>
+              <span className="text-[11px] font-mono text-slate-400">
+                {queue?.length ?? 0} total
+              </span>
             </div>
-            <div className="grid grid-cols-2 gap-2 pt-1">
-              <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <div className="flex items-center gap-3 pt-0.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                 <span>{completed} Confirmed</span>
               </div>
-              <div className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-semibold">
-                <XCircle className="h-4 w-4 shrink-0" />
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-rose-700 dark:text-rose-400">
+                <XCircle className="h-3.5 w-3.5 shrink-0" />
                 <span>{failed} Rejected</span>
               </div>
             </div>
+            <p className="text-[11px] text-slate-400 leading-snug">
+              Completed transaction logs.
+            </p>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 text-xs border border-blue-100 dark:border-blue-900/40">
-          <ShieldCheck className="h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
-          <span>
-            Database guarantee: A partial unique index (<code>uq_single_processing_slot</code>) strictly forbids multiple rows from having status="processing" concurrently.
-          </span>
         </div>
       </div>
 
-      <div className="card p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
+      {/* ─── Recent Bookings Table ─── */}
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-xs overflow-hidden w-full min-w-0">
+        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-brand-500" />
-            <h2 className="font-semibold text-base">Recent Bookings</h2>
+            <Activity className="h-4 w-4 text-slate-400 dark:text-slate-500" />
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              Recent Bookings
+            </h2>
           </div>
-          <Link to="/admin/bookings" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1">
+          <Link
+            to="/admin/bookings"
+            className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+          >
             <span>View All</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
-        <div className="overflow-x-auto -mx-6">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-900/60 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-xs min-w-[600px]">
+            <thead className="bg-slate-50/70 dark:bg-slate-900/80 text-left font-semibold text-slate-500 uppercase tracking-wider text-[11px] border-b border-slate-100 dark:border-slate-800">
               <tr>
-                <th className="py-3 px-6">Reference</th>
-                <th className="py-3 px-4">Passenger</th>
-                <th className="py-3 px-4">Route</th>
-                <th className="py-3 px-4">Seat</th>
-                <th className="py-3 px-4">Fare</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-6">Time</th>
+                <th className="py-3 px-4 sm:px-5">Reference</th>
+                <th className="py-3 px-3 sm:px-4">Passenger</th>
+                <th className="py-3 px-3 sm:px-4">Route</th>
+                <th className="py-3 px-3 sm:px-4">Seat</th>
+                <th className="py-3 px-3 sm:px-4">Fare</th>
+                <th className="py-3 px-3 sm:px-4">Status</th>
+                <th className="py-3 px-4 sm:px-5">Time</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
               {recentBookings?.map((b) => (
-                <tr key={b.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-6 font-mono text-xs font-semibold text-brand-600 dark:text-brand-400">
+                <tr
+                  key={b.id}
+                  className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                >
+                  <td className="py-3 px-4 sm:px-5 font-mono font-semibold text-slate-900 dark:text-slate-100">
                     {b.booking_reference}
                   </td>
-                  <td className="py-3 px-4 text-xs font-medium">
+                  <td className="py-3 px-3 sm:px-4 font-medium text-slate-700 dark:text-slate-300">
                     {b.user?.email ?? "Customer"}
                   </td>
-                  <td className="py-3 px-4 text-xs">
+                  <td className="py-3 px-3 sm:px-4 text-slate-600 dark:text-slate-400">
                     {b.schedule ? `${b.schedule.origin} → ${b.schedule.destination}` : "—"}
                   </td>
-                  <td className="py-3 px-4 text-xs font-bold font-mono">
+                  <td className="py-3 px-3 sm:px-4 font-mono font-bold text-slate-900 dark:text-slate-100">
                     {b.seat?.seat_number ?? "—"}
                   </td>
-                  <td className="py-3 px-4 text-xs font-medium">
+                  <td className="py-3 px-3 sm:px-4 font-mono text-slate-800 dark:text-slate-200 font-medium">
                     ₱{Number(b.total_amount).toFixed(2)}
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-3 sm:px-4">
                     <StatusBadge status={b.booking_status} />
                   </td>
-                  <td className="py-3 px-6 text-xs text-slate-400">
-                    {new Date(b.created_at).toLocaleTimeString()}
+                  <td className="py-3 px-4 sm:px-5 text-slate-400 font-mono">
+                    {new Date(b.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>
                 </tr>
               ))}
               {recentBookings?.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-xs text-slate-500">
+                  <td colSpan={7} className="py-8 text-center text-slate-400">
                     No bookings recorded yet.
                   </td>
                 </tr>
@@ -299,28 +311,26 @@ function StatCard({
   label,
   value,
   badge,
-  accent,
-  bgAccent,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string | number;
   badge?: string;
-  accent: string;
-  bgAccent: string;
 }) {
   return (
-    <div className="card p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</span>
-        <div className={`p-2 rounded-lg ${bgAccent} ${accent}`}>
-          <Icon className="h-4 w-4" />
-        </div>
+    <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-xs space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+          {label}
+        </span>
+        <Icon className="h-4 w-4 text-slate-400 dark:text-slate-500" />
       </div>
       <div className="flex items-baseline justify-between gap-2">
-        <p className="text-2xl font-bold tracking-tight">{value}</p>
+        <p className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-slate-900 dark:text-slate-100">
+          {value}
+        </p>
         {badge && (
-          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
             {badge}
           </span>
         )}

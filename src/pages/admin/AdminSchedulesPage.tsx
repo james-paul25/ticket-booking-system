@@ -141,7 +141,7 @@ export function AdminSchedulesPage() {
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <Link
-                        to={`/schedules/${s.id}`}
+                        to={`/schedules/${s.id}/seats`}
                         title="View Seat Map & Details"
                         className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                       >

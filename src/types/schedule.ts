@@ -13,9 +13,12 @@ export interface Schedule {
   total_seats: number;
   available_seats: number;
   price: number;
+  business_price?: number;
   status: ScheduleStatus;
   created_at: string;
   updated_at: string;
+  category?: "fastcraft" | "roro";
+  operator?: string;
 }
 
 export interface ScheduleFilters {
