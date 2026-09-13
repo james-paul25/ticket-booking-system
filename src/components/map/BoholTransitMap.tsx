@@ -2705,7 +2705,7 @@ export function BoholTransitMap({
               </div>
 
               {/* Scrollable Body */}
-              <div className="flex-1 overflow-y-auto no-scrollbar p-3.5 space-y-3.5 text-slate-900 overscroll-contain">
+              <div className="flex-1 overflow-y-auto no-scrollbar p-3.5 space-y-3.5 text-slate-900 dark:text-slate-100 overscroll-contain">
                 {/* ─── TAB 1: Route Planner & Crossing Form ─── */}
                 {activeTab === "planner" && (
                   <div key="planner-tab" className="space-y-4 p-1 animate-tab-drop">
@@ -3035,26 +3035,26 @@ export function BoholTransitMap({
                 {activeTab === "ports" && (
                   <div key="ports-tab" className="space-y-3 animate-tab-drop">
                     {selectedPort && (
-                      <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-100 space-y-2">
+                      <div className="p-3.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 space-y-2">
                         <div className="flex items-start justify-between">
                           <div>
                             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white">
                               {selectedPort.badge}
                             </span>
-                            <h3 className="font-bold text-base text-slate-900 mt-1">{selectedPort.name}</h3>
-                            <p className="text-xs text-slate-500">
+                            <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 mt-1">{selectedPort.name}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
                               {selectedPort.city}, {selectedPort.province}
                             </p>
                           </div>
-                          <button onClick={() => setSelectedPort(null)} className="text-slate-400 hover:text-slate-700 p-1">
+                          <button onClick={() => setSelectedPort(null)} className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1">
                             <X size={14} />
                           </button>
                         </div>
 
-                        <p className="text-xs text-slate-600 leading-relaxed">{selectedPort.description}</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{selectedPort.description}</p>
 
-                        <div className="pt-2 border-t border-blue-100/80 flex items-center justify-between text-xs">
-                          <span className="font-semibold text-blue-900">
+                        <div className="pt-2 border-t border-blue-100/80 dark:border-blue-900/60 flex items-center justify-between text-xs">
+                          <span className="font-semibold text-blue-900 dark:text-blue-300">
                             {selectedPort.dailySailings} Daily Sailings
                           </span>
                           {!showVessels && (
@@ -3063,7 +3063,7 @@ export function BoholTransitMap({
                                 handleOriginChange(selectedPort.id);
                                 setActiveTab("planner");
                               }}
-                              className="font-bold text-blue-600 hover:underline flex items-center gap-1"
+                              className="font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
                             >
                               Plan route <ArrowRight size={11} />
                             </button>
@@ -3073,7 +3073,7 @@ export function BoholTransitMap({
                     )}
 
                     <div className="space-y-2">
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                         Bohol Maritime Passenger Terminals
                       </p>
                       {filteredPorts.map((p) => (
@@ -3082,17 +3082,17 @@ export function BoholTransitMap({
                           type="button"
                           onClick={() => handleSelectPort(p)}
                           className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between ${selectedPort?.id === p.id
-                            ? "bg-blue-50 border-blue-400 shadow-sm"
-                            : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                            ? "bg-blue-50 dark:bg-blue-950/50 border-blue-400 dark:border-blue-700 shadow-sm"
+                            : "bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800"
                             }`}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                               <MapPin size={15} />
                             </div>
                             <div>
-                              <p className="font-bold text-xs text-slate-900">{p.name}</p>
-                              <p className="text-[11px] text-slate-400">{p.role}</p>
+                              <p className="font-bold text-xs text-slate-900 dark:text-slate-100">{p.name}</p>
+                              <p className="text-[11px] text-slate-400 dark:text-slate-500">{p.role}</p>
                             </div>
                           </div>
                           <ChevronRight size={14} className="text-slate-400" />
@@ -3160,7 +3160,7 @@ export function BoholTransitMap({
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                           Fleet Tracking (Updated Every 1m)
                         </p>
                       </div>
@@ -3174,7 +3174,7 @@ export function BoholTransitMap({
                             onClick={() => handleSelectVessel(v)}
                             className={`w-full p-3 rounded-xl border text-left transition-all flex items-center justify-between ${selectedVessel?.id === v.id
                               ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-                              : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-900"
+                              : "bg-white dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100"
                               }`}
                           >
                             <div className="flex items-center gap-3">
@@ -3182,8 +3182,8 @@ export function BoholTransitMap({
                                 className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${selectedVessel?.id === v.id
                                   ? "bg-white/20 text-white"
                                   : isUnderway
-                                    ? "bg-blue-50 text-blue-600"
-                                    : "bg-amber-50 text-amber-600"
+                                    ? "bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400"
+                                    : "bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400"
                                   }`}
                               >
                                 <Ship size={15} />
@@ -3192,11 +3192,11 @@ export function BoholTransitMap({
                                 <div className="flex items-center gap-1.5">
                                   <p className="font-bold text-xs">{v.name}</p>
                                   {isUnderway ? (
-                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
+                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800">
                                       {v.speedKnots} kn
                                     </span>
                                   ) : (
-                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 font-semibold border border-amber-200">
+                                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-800">
                                       Moored
                                     </span>
                                   )}

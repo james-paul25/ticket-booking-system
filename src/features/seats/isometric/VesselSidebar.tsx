@@ -61,7 +61,7 @@ export function VesselSidebar({
 
   return (
     <aside
-      className={`fixed lg:static bottom-0 left-0 right-0 z-40 w-full lg:w-96 shrink-0 bg-white border-t lg:border-t-0 lg:border-r border-slate-200 shadow-2xl lg:shadow-xl flex flex-col font-sans select-none rounded-t-[28px] lg:rounded-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${
+      className={`fixed lg:static bottom-0 left-0 right-0 z-40 w-full lg:w-96 shrink-0 bg-white dark:bg-slate-900 border-t lg:border-t-0 lg:border-r border-slate-200 dark:border-slate-800 shadow-2xl lg:shadow-xl flex flex-col font-sans select-none rounded-t-[28px] lg:rounded-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden ${
         isMobileExpanded || selectedSeat
           ? "max-h-[82vh] lg:max-h-full lg:h-full"
           : "max-h-[140px] sm:max-h-[155px] lg:max-h-full lg:h-full"
@@ -84,11 +84,11 @@ export function VesselSidebar({
             className="flex items-center gap-2.5 cursor-pointer lg:cursor-default"
             onClick={() => setIsMobileExpanded((prev) => !prev)}
           >
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
               <Ship size={18} />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 leading-tight">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight">
                 {vesselName}
               </h3>
             </div>
@@ -98,7 +98,7 @@ export function VesselSidebar({
             <button
               type="button"
               onClick={() => setIsMobileExpanded((prev) => !prev)}
-              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Toggle Sheet"
               aria-label="Toggle Sheet"
             >
@@ -107,7 +107,7 @@ export function VesselSidebar({
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Close seat selection"
               aria-label="Close seat selection"
             >
@@ -117,43 +117,43 @@ export function VesselSidebar({
         </div>
 
         {/* ─── Outbound Sailing Card (Minimalist schedule style from Photo 2 with slashed-zero font-mono) ─── */}
-        <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-2.5">
-          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
+        <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/90 dark:border-slate-700/70 space-y-2.5">
+          <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
             <span>OUTBOUND</span>
-            <span className="text-blue-600 bg-blue-50 border border-blue-100 px-2 py-0.5 rounded-md font-semibold font-mono normal-case">
+            <span className="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900/60 px-2 py-0.5 rounded-md font-semibold font-mono normal-case">
               {duration}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-2xl font-black font-mono text-slate-950 leading-tight tracking-tight slashed-zero">
+              <div className="text-2xl font-black font-mono text-slate-950 dark:text-slate-100 leading-tight tracking-tight slashed-zero">
                 {departureTime}
               </div>
-              <div className="text-xs font-semibold text-slate-500 truncate max-w-[110px]">
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate max-w-[110px]">
                 {originName || routeText.split("→")[0]?.trim() || "Departure"}
               </div>
             </div>
 
             <div className="flex flex-col items-center px-2">
-              <div className="w-12 h-px bg-slate-300 relative flex items-center justify-center">
+              <div className="w-12 h-px bg-slate-300 dark:bg-slate-600 relative flex items-center justify-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-blue-600 absolute" />
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-2xl font-black font-mono text-slate-950 leading-tight tracking-tight slashed-zero">
+              <div className="text-2xl font-black font-mono text-slate-950 dark:text-slate-100 leading-tight tracking-tight slashed-zero">
                 {arrivalTime}
               </div>
-              <div className="text-xs font-semibold text-slate-500 truncate max-w-[110px]">
+              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate max-w-[110px]">
                 {destName || routeText.split("→")[1]?.trim() || "Arrival"}
               </div>
             </div>
           </div>
 
           {travelDate && (
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 pt-2 border-t border-slate-200/60 font-mono slashed-zero">
-              <Calendar size={13} className="text-slate-400 shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 font-mono slashed-zero">
+              <Calendar size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
               <span>{travelDate}</span>
             </div>
           )}
@@ -162,14 +162,14 @@ export function VesselSidebar({
         {/* ─── "Your seat" Selection Section (Smooth in-and-out transition) ─── */}
         <div className={`space-y-2 transition-all duration-300 ease-in-out ${isTransitioning ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}>
           <div className="flex items-center justify-between">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Your Seat
             </h4>
             {selectedSeat && (
               <button
                 type="button"
                 onClick={onClearSelection}
-                className="text-[11px] font-semibold text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 transition-colors cursor-pointer"
               >
                 Clear
               </button>
@@ -177,19 +177,19 @@ export function VesselSidebar({
           </div>
 
           {selectedSeat ? (
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-3.5 shadow-xs space-y-2.5">
+            <div className="rounded-2xl border border-slate-200/90 dark:border-slate-700/70 bg-white dark:bg-slate-800/60 p-3.5 shadow-xs space-y-2.5">
               {/* Header line: Class tag and status indicator */}
               <div className="flex items-center justify-between">
                 {selectedSeat.tier === "business" ? (
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[#b48324] bg-[#fdf8ee] border border-[#ecdcb8] px-2 py-0.5 rounded-md font-mono">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#b48324] dark:text-[#e0b563] bg-[#fdf8ee] dark:bg-[#3a2f16] border border-[#ecdcb8] dark:border-[#5c4a24] px-2 py-0.5 rounded-md font-mono">
                     Business Class
                   </span>
                 ) : (
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 bg-slate-100 border border-slate-200/80 px-2 py-0.5 rounded-md font-mono">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-700/60 border border-slate-200/80 dark:border-slate-600 px-2 py-0.5 rounded-md font-mono">
                     Economy Class
                   </span>
                 )}
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-900/50 px-2 py-0.5 rounded-md flex items-center gap-1">
                   <Check size={12} className="stroke-[2.5]" />
                   <span>Selected</span>
                 </span>
@@ -198,43 +198,43 @@ export function VesselSidebar({
               {/* Main Seat Row: Bold seat number + Voyage Fare */}
               <div className="flex items-baseline justify-between pt-0.5">
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     SEAT NUMBER
                   </div>
-                  <div className="text-3xl font-black text-slate-950 tracking-tight leading-none mt-1 font-mono slashed-zero">
+                  <div className="text-3xl font-black text-slate-950 dark:text-slate-100 tracking-tight leading-none mt-1 font-mono slashed-zero">
                     {selectedSeat.label}
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     VOYAGE FARE
                   </div>
-                  <div className="text-xl font-black text-slate-950 tracking-tight leading-none mt-1 font-mono slashed-zero">
+                  <div className="text-xl font-black text-slate-950 dark:text-slate-100 tracking-tight leading-none mt-1 font-mono slashed-zero">
                     ₱{seatFare.toLocaleString()}
                   </div>
                 </div>
               </div>
 
               {/* Seat Details metadata strip */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
-                <span className="font-semibold text-slate-700">
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700/60 text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-semibold text-slate-700 dark:text-slate-300">
                   {selectedSeat.isWindow ? "Window Side View" : "Direct Aisle Access"}
                 </span>
-                <span className="text-slate-400">
+                <span className="text-slate-400 dark:text-slate-500">
                   {deck.name} • Row <strong className="font-mono slashed-zero">{selectedSeat.row + 1}</strong>
                 </span>
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-3 text-center space-y-1">
-              <p className="text-xs font-bold text-slate-700">
+            <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/40 p-3 text-center space-y-1">
+              <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
                 No Seat Selected
               </p>
-              <p className="text-[11px] text-slate-400 leading-snug">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-snug">
                 Click any available white seat on the cabin deck.
               </p>
-              <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full font-mono slashed-zero">
+              <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full font-mono slashed-zero">
                 <span>{availableCount} seats free on {deck.name}</span>
               </div>
             </div>
@@ -242,38 +242,38 @@ export function VesselSidebar({
         </div>
 
         {/* ─── Fare Breakdown & Authoritative Big Total Due (Smooth in-and-out transition) ─── */}
-        <div className={`space-y-1.5 pt-2.5 border-t border-slate-200 transition-all duration-300 ease-in-out ${isTransitioning ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}>
+        <div className={`space-y-1.5 pt-2.5 border-t border-slate-200 dark:border-slate-700 transition-all duration-300 ease-in-out ${isTransitioning ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}>
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-500 font-medium">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
               Base Passenger Fare{" "}
               {selectedSeat ? (
-                <span className="font-mono text-slate-700 font-bold slashed-zero">({selectedSeat.label})</span>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold slashed-zero">({selectedSeat.label})</span>
               ) : (
-                <span className="text-slate-400 font-normal">({isBusiness ? "Business" : "Economy"})</span>
+                <span className="text-slate-400 dark:text-slate-500 font-normal">({isBusiness ? "Business" : "Economy"})</span>
               )}
             </span>
-            <span className="font-bold font-mono text-slate-900 slashed-zero">
+            <span className="font-bold font-mono text-slate-900 dark:text-slate-100 slashed-zero">
               ₱{seatFare.toLocaleString()}
             </span>
           </div>
 
           <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-500 font-medium">Online Seat Reservation Fee</span>
-            <span className="font-bold font-mono text-slate-900 slashed-zero">₱{reservationFee}</span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Online Seat Reservation Fee</span>
+            <span className="font-bold font-mono text-slate-900 dark:text-slate-100 slashed-zero">₱{reservationFee}</span>
           </div>
 
           {/* Balanced TOTAL DUE Row: Clear, readable 'TOTAL DUE' title and disclaimer, with matched size price number */}
-          <div className="flex items-center justify-between pt-2.5 border-t border-slate-200">
+          <div className="flex items-center justify-between pt-2.5 border-t border-slate-200 dark:border-slate-700">
             <div>
-              <span className="text-base sm:text-lg font-black uppercase tracking-wide text-slate-900 block">
+              <span className="text-base sm:text-lg font-black uppercase tracking-wide text-slate-900 dark:text-slate-100 block">
                 Total Due
               </span>
-              <span className="text-xs text-slate-500 font-medium block mt-0.5">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium block mt-0.5">
                 Includes seat reservation guarantee
               </span>
             </div>
             <div className="text-right">
-              <span className="text-xl sm:text-2xl font-black font-mono text-slate-950 tracking-tight slashed-zero">
+              <span className="text-xl sm:text-2xl font-black font-mono text-slate-950 dark:text-slate-100 tracking-tight slashed-zero">
                 ₱{totalAmount.toLocaleString()}
               </span>
             </div>
@@ -291,7 +291,7 @@ export function VesselSidebar({
             className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-md transition-all duration-200 ${
               selectedSeat
                 ? "bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white shadow-blue-600/25 cursor-pointer transform hover:-translate-y-0.5"
-                : "bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none"
+                : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-300 dark:border-slate-700 cursor-not-allowed shadow-none"
             }`}
           >
             <span>Continue to Payment</span>
