@@ -10,6 +10,7 @@ import { NotFoundPage } from "@/pages/public/NotFoundPage";
 
 import { SchedulesPage } from "@/pages/customer/SchedulesPage";
 import { ScheduleDetailPage } from "@/pages/customer/ScheduleDetailPage";
+import { SeatSelectionPage } from "@/pages/customer/SeatSelectionPage";
 import { BookingPage } from "@/pages/customer/BookingPage";
 import { ConfirmationPage } from "@/pages/customer/ConfirmationPage";
 import { BookingsHistoryPage } from "@/pages/customer/BookingsHistoryPage";
@@ -30,6 +31,8 @@ import { AdminFleetPage } from "@/pages/admin/AdminFleetPage";
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   { path: "/register", element: <RegisterPage /> },
+  { path: "/schedules/:id/seats", element: <SeatSelectionPage /> },
+  { path: "/booking/seats/:scheduleId", element: <SeatSelectionPage /> },
   {
     path: "/",
     element: <AppLayout />,

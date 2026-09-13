@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 import type { Schedule, ScheduleFilters } from "@/types/schedule";
-import { getRollingMaritimeSchedules } from "@/data/realSchedules";
+import { getRollingMaritimeSchedules, REAL_SCHEDULE_TEMPLATES } from "@/data/realSchedules";
 
 export const scheduleService = {
   async list(filters: ScheduleFilters = {}): Promise<Schedule[]> {
@@ -55,16 +55,46 @@ export const scheduleService = {
   },
 
   async getById(id: string): Promise<Schedule | null> {
-    try {
-      const { data, error } = await supabase.from("schedules").select("*").eq("id", id).single();
-      if (!error && data) return data as Schedule;
-    } catch {
-      // Fallback search
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (isUuid) {
+      try {
+        const { data, error } = await supabase.from("schedules").select("*").eq("id", id).single();
+        if (!error && data) return data as Schedule;
+      } catch {
+        // Fallback search
+      }
     }
 
     const allSchedules = getRollingMaritimeSchedules(30);
     const found = allSchedules.find((s) => s.id === id);
     if (found) return found;
+
+    if (id.includes("tpl-")) {
+      const parts = id.split("-");
+      const dateStr = parts.slice(-3).join("-");
+      const templateId = parts.slice(0, -3).join("-");
+      const tpl = REAL_SCHEDULE_TEMPLATES.find((t) => t.templateId === templateId);
+      if (tpl) {
+        return {
+          id,
+          route_name: tpl.routeName,
+          origin: tpl.origin,
+          destination: tpl.destination,
+          departure_date: dateStr,
+          departure_time: `${tpl.departureTime}:00`,
+          arrival_time: `${tpl.arrivalTime}:00`,
+          vehicle_name: tpl.vehicleName,
+          vehicle_number: tpl.vehicleNumber,
+          total_seats: tpl.totalSeats,
+          available_seats: Math.max(12, tpl.totalSeats - 35),
+          price: tpl.price,
+          business_price: tpl.businessPrice,
+          status: "scheduled",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+      }
+    }
 
     return null;
   },

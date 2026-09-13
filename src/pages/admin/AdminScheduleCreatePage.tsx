@@ -52,12 +52,13 @@ export function AdminScheduleCreatePage() {
       const seatsToInsert = [];
       let remaining = values.totalSeats;
       for (const row of rows) {
+        const isBusiness = row === "A";
         for (let col = 1; col <= 4 && remaining > 0; col++, remaining--) {
           seatsToInsert.push({
             schedule_id: schedule.id,
             seat_number: `${row}${col}`,
-            seat_type: row === "A" ? "premium" : "standard",
-            price: values.price,
+            seat_type: isBusiness ? "business" : "economy",
+            price: isBusiness ? Math.round(values.price * 1.45) : values.price,
             status: "available" as const,
           });
         }

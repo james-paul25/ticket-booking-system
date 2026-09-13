@@ -13,6 +13,15 @@ html {
   -ms-overflow-style: none;
 }
 
+/* Eliminate any browser focus rings or black bounding boxes on SVG elements */
+svg *:focus,
+svg *:focus-visible,
+svg g:focus,
+svg g:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 html::-webkit-scrollbar {
   display: none;
   width: 0;
@@ -69,12 +78,29 @@ body::-webkit-scrollbar {
 }
 
 @layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.7);
   }
 }
 
@@ -147,5 +173,46 @@ body::-webkit-scrollbar {
 }
 .delay-450 {
   animation-delay: 450ms;
+}
+
+/* ─── Sidebar Tab Content Transition ─── */
+@keyframes tabDropIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-tab-drop {
+  animation: tabDropIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+/* ─── Nuke AppLayout top bar whenever transit map is active in full screen ─── */
+html.map-fullscreen-active header,
+body.map-fullscreen-active header,
+.map-fullscreen-active header {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ─── Slashed-Zero & Monospace Number Styling (matching schedule cards) ─── */
+.font-mono,
+.slashed-zero {
+  font-feature-settings: "zero" 1;
+  font-variant-numeric: slashed-zero tabular-nums;
 }
 

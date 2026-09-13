@@ -34,7 +34,15 @@ export function LoginPage() {
     }
   }, [location.state]);
 
-  const from = (location.state as { from?: Location })?.from?.pathname ?? "/schedules";
+  const state = location.state as { from?: Location | string; returnTo?: string } | null;
+  const from =
+    state?.returnTo ??
+    (typeof state?.from === "string"
+      ? state.from
+      : state?.from?.search
+      ? `${state.from.pathname}${state.from.search}`
+      : state?.from?.pathname) ??
+    "/schedules";
 
   const {
     register,

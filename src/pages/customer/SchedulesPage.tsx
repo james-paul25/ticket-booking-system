@@ -211,7 +211,7 @@ export function SchedulesPage() {
             {upcomingDepartures.map((s) => (
               <Link
                 key={s.id}
-                to={`/schedules/${s.id}`}
+                to={`/schedules/${s.id}/seats`}
                 className="p-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 transition-all flex flex-col justify-between gap-2 group"
               >
                 <div>
@@ -538,7 +538,7 @@ export function SchedulesPage() {
                 </div>
 
                 <Link
-                  to={`/schedules/${schedule.id}`}
+                  to={`/schedules/${schedule.id}/seats`}
                   className="btn-primary !py-2 !px-4 text-xs font-black flex items-center gap-1 shadow-sm active:scale-95"
                 >
                   Select Seat <ChevronRight size={14} />

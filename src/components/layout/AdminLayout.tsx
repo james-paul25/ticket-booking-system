@@ -67,14 +67,14 @@ export function AdminLayout() {
   const isProcessing = queue?.some((q) => q.status === "processing");
 
   return (
-    <div className="grid md:grid-cols-[240px_1fr] gap-6 items-start">
-      <aside className="card p-3 md:sticky md:top-20 space-y-4 shadow-sm border border-slate-200/80 dark:border-slate-800">
+    <div className="grid md:grid-cols-[240px_1fr] gap-6 items-start w-full min-w-0">
+      <aside className="card p-3 md:sticky md:top-20 space-y-4 shadow-sm border border-slate-200/80 dark:border-slate-800 w-full min-w-0">
         <div className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
           <Cpu className="h-3.5 w-3.5 text-brand-500" />
           <span>Admin Portal</span>
         </div>
 
-        <nav className="flex md:flex-col gap-4 overflow-x-auto pb-1 md:pb-0">
+        <nav className="flex md:flex-col gap-4 overflow-x-auto pb-1 md:pb-0 max-w-full">
           {navSections.map((section) => (
             <div key={section.title} className="space-y-1 min-w-max md:min-w-0">
               <div className="hidden md:block px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">

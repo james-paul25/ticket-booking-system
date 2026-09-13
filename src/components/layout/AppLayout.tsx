@@ -19,6 +19,17 @@ export function AppLayout() {
   const { user, profile, isAdmin, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isMapFullscreen, setIsMapFullscreen] = useState(() => {
+    return typeof document !== "undefined" && document.body.classList.contains("map-fullscreen-active");
+  });
+
+  useEffect(() => {
+    const handleMapChange = (e: any) => {
+      setIsMapFullscreen(Boolean(e.detail?.isFullscreen));
+    };
+    window.addEventListener("map-fullscreen-change", handleMapChange);
+    return () => window.removeEventListener("map-fullscreen-change", handleMapChange);
+  }, []);
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -32,18 +43,21 @@ export function AppLayout() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const shouldHideHeader = isMapFullscreen;
+
   return (
     <div
       className="min-h-screen flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 w-full transition-colors duration-200"
       style={{ fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}
     >
-      <header
-        className={`sticky top-0 z-40 w-full transition-all duration-200 ${
-          scrolled
-            ? "border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm"
-            : "border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950"
-        }`}
-      >
+      {!shouldHideHeader && (
+        <header
+          className={`sticky top-0 z-40 w-full transition-all duration-200 ${
+            scrolled
+              ? "border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md shadow-sm"
+              : "border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950"
+          }`}
+        >
         <div className="mx-auto max-w-6xl px-4 sm:px-6 flex items-center justify-between h-16 gap-3">
           <div className="flex items-center gap-2.5">
             <Link
@@ -193,9 +207,14 @@ export function AppLayout() {
           </div>
         )}
       </header>
+      )}
 
-      <main className="flex-1 mx-auto w-full max-w-6xl px-3 sm:px-4 py-5 sm:py-7">
-        <div key={location.pathname} className="animate-page-fade w-full">
+      <main
+        className={`flex-1 mx-auto w-full max-w-6xl px-3 sm:px-4 min-w-0 ${
+          location.pathname.startsWith("/booking") ? "pt-1.5 pb-6" : "py-5 sm:py-7"
+        }`}
+      >
+        <div key={location.pathname} className="animate-page-fade w-full min-w-0">
           <Outlet />
         </div>
       </main>

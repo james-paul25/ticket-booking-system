@@ -3,5 +3,14 @@ dist
 .env
 .DS_Store
 *.log
-.env
-*.tsbuildinfo
+*.tsbuildinfo
+test-results/
+playwright-report/
+scratch/
+temp_kml/
+.gemini/
+.agent/
+.agents/
+.claude/
+.codex/
+skills-lock.json
