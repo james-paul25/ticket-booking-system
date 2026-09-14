@@ -2,6 +2,15 @@ import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/features/auth/AuthContext";
 import * as maplibregl from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+
+// Must run once, before any `new maplibregl.Map(...)` is constructed.
+// MapLibre v6 ships ESM-only and no longer auto-resolves its worker script
+// under bundlers like Vite — this is MapLibre's own documented Vite recipe.
+// Without it, the worker request 404s in production and falls through to
+// index.html (wrong MIME type), so vector tiles/routes never render.
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
+
 import {
   Search,
   Ship,
