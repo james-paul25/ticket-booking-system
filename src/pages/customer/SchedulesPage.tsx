@@ -8,11 +8,14 @@ import {
   Calendar,
   RotateCcw,
   ChevronRight,
+  ChevronLeft,
   Ship,
 } from "lucide-react";
 import { scheduleService } from "@/services/scheduleService";
 import { supabase } from "@/services/supabase";
 import type { ScheduleFilters } from "@/types/schedule";
+
+const PAGE_SIZE = 10;
 
 function formatTripDate(dateStr?: string) {
   if (!dateStr) return "All Upcoming Dates";
@@ -35,19 +38,45 @@ export function SchedulesPage() {
   const [destination, setDestination] = useState(searchParams.get("destination") ?? "");
   const [selectedDate, setSelectedDate] = useState(searchParams.get("date") ?? "");
   const [vehicleType, setVehicleType] = useState<"all" | "fastcraft" | "roro">("all");
+  const [page, setPage] = useState(1);
 
   const filters: ScheduleFilters = useMemo(
     () => ({
       origin: origin || undefined,
       destination: destination || undefined,
       date: selectedDate || undefined,
+      vehicleType,
     }),
-    [origin, destination, selectedDate]
+    [origin, destination, selectedDate, vehicleType]
   );
 
-  const { data: rawSchedules, isLoading, error } = useQuery({
-    queryKey: ["schedules", filters],
-    queryFn: () => scheduleService.list(filters),
+  // Reset to page 1 whenever the filter set changes, so we never end up
+  // requesting a page that no longer exists for the new filter combo.
+  useEffect(() => {
+    setPage(1);
+  }, [origin, destination, selectedDate, vehicleType]);
+
+  const {
+    data: scheduleResult,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["schedules", "page", filters, page],
+    queryFn: () => scheduleService.listPage(filters, { page, pageSize: PAGE_SIZE }),
+    placeholderData: (previousData) => previousData,
+  });
+
+  // Separate, lightweight query for the "Next Upcoming Departures" board —
+  // always the first 3 sailings overall, independent of whichever page the
+  // user has paged to below.
+  const { data: upcomingResult } = useQuery({
+    queryKey: ["schedules", "upcoming"],
+    queryFn: () =>
+      scheduleService.listPage({ onlyFutureDepartures: true }, { page: 1, pageSize: 3 }),
+    enabled: !origin && !destination,
+    // Departures that were "next up" a few minutes ago may have since
+    // sailed — keep this board from going stale while it's on screen.
+    refetchInterval: 60_000,
   });
 
   useEffect(() => {
@@ -129,47 +158,12 @@ export function SchedulesPage() {
     setSearchParams(new URLSearchParams());
   }
 
-  // Next Upcoming Departures: Immediate sailings for quick selection
-  const upcomingDepartures = useMemo(() => {
-    if (!rawSchedules || rawSchedules.length === 0) return [];
-    return rawSchedules.slice(0, 3);
-  }, [rawSchedules]);
-
-  const processedSchedules = useMemo(() => {
-    if (!rawSchedules) return [];
-    let list = [...rawSchedules];
-
-    if (vehicleType === "fastcraft") {
-      list = list.filter((s) => {
-        const name = s.vehicle_name.toLowerCase();
-        return (
-          name.includes("oceanjet") ||
-          name.includes("supercat") ||
-          name.includes("fastcat") ||
-          name.includes("island water") ||
-          name.includes("clemer") ||
-          name.includes("joy express") ||
-          name.includes("fastcraft")
-        );
-      });
-    } else if (vehicleType === "roro") {
-      list = list.filter((s) => {
-        const name = s.vehicle_name.toLowerCase();
-        return (
-          name.includes("lite ferry") ||
-          name.includes("super shuttle") ||
-          name.includes("medallion") ||
-          name.includes("trans-asia") ||
-          name.includes("roro") ||
-          name.includes("liner")
-        );
-      });
-    }
-
-    list.sort((a, b) => a.departure_time.localeCompare(b.departure_time));
-
-    return list;
-  }, [rawSchedules, vehicleType]);
+  const upcomingDepartures = upcomingResult?.data ?? [];
+  const processedSchedules = scheduleResult?.data ?? [];
+  const totalPages = scheduleResult?.totalPages ?? 1;
+  const totalCount = scheduleResult?.count ?? 0;
+  const hasNextPage = scheduleResult?.hasNextPage ?? false;
+  const hasPreviousPage = scheduleResult?.hasPreviousPage ?? false;
 
   return (
     <div className="space-y-6 animate-fade-in max-w-5xl mx-auto px-2 py-2">
@@ -425,7 +419,7 @@ export function SchedulesPage() {
         </div>
       )}
 
-      <div key={`${vehicleType}-${selectedDate}`} className="grid sm:grid-cols-2 gap-4 animate-page-fade">
+      <div key={`${vehicleType}-${selectedDate}-${page}`} className="grid sm:grid-cols-2 gap-4 animate-page-fade">
         {processedSchedules.map((schedule) => {
           const isRoro =
             schedule.vehicle_name.toLowerCase().includes("roro") ||
@@ -548,6 +542,33 @@ export function SchedulesPage() {
           );
         })}
       </div>
+
+      {/* ─── Pagination Controls ─── */}
+      {!isLoading && totalCount > 0 && (
+        <div className="flex items-center justify-between gap-3 pt-2">
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+            Page {page} of {totalPages} · {totalCount} sailing{totalCount === 1 ? "" : "s"} found
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={!hasPreviousPage}
+              className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              <ChevronLeft size={14} /> Prev
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage((p) => (hasNextPage ? p + 1 : p))}
+              disabled={!hasNextPage}
+              className="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Next <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
