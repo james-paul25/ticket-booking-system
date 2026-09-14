@@ -123,7 +123,7 @@ function toPaginatedResult<T>(
   };
 }
 
-function applyCommonFilters<T extends { origin: string; destination: string; departure_date: string; price: number; available_seats: number }>(
+function applyCommonFilters(
   query: any,
   filters: ScheduleFilters
 ) {
