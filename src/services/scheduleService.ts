@@ -2,6 +2,8 @@ import { supabase } from "./supabase";
 import type { Schedule, ScheduleFilters } from "@/types/schedule";
 import { getRollingMaritimeSchedules, REAL_SCHEDULE_TEMPLATES } from "@/data/realSchedules";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const scheduleService = {
   async list(filters: ScheduleFilters = {}): Promise<Schedule[]> {
     try {
@@ -26,7 +28,10 @@ export const scheduleService = {
       // Fallback seamlessly to verified maritime registry if remote is unavailable
     }
 
-    // Fallback only if database is completely empty or unreachable
+    // Fallback only if database is completely empty or unreachable.
+    // NOTE: rows returned from here have synthetic `tpl-...` ids and are not
+    // yet real schedules — bookingService.saveBooking materializes them into
+    // real Supabase rows the moment a customer actually tries to book one.
     let maritimeList = getRollingMaritimeSchedules(14);
 
     if (filters.origin) {
@@ -55,14 +60,10 @@ export const scheduleService = {
   },
 
   async getById(id: string): Promise<Schedule | null> {
-    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    if (isUuid) {
-      try {
-        const { data, error } = await supabase.from("schedules").select("*").eq("id", id).single();
-        if (!error && data) return data as Schedule;
-      } catch {
-        // Fallback search
-      }
+    if (UUID_RE.test(id)) {
+      const { data, error } = await supabase.from("schedules").select("*").eq("id", id).single();
+      if (error) throw new Error(`Failed to load schedule: ${error.message}`);
+      return data as Schedule;
     }
 
     const allSchedules = getRollingMaritimeSchedules(30);
@@ -70,11 +71,9 @@ export const scheduleService = {
     if (found) return found;
 
     if (id.includes("tpl-")) {
-      const parts = id.split("-");
-      const dateStr = parts.slice(-3).join("-");
-      const templateId = parts.slice(0, -3).join("-");
-      const tpl = REAL_SCHEDULE_TEMPLATES.find((t) => t.templateId === templateId);
+      const tpl = findTemplateForId(id);
       if (tpl) {
+        const dateStr = dateFromTemplateId(id);
         return {
           id,
           route_name: tpl.routeName,
@@ -99,6 +98,46 @@ export const scheduleService = {
     return null;
   },
 
+  /**
+   * Turns a synthetic `tpl-...` fallback schedule into a real, bookable
+   * `schedules` row (with real `seats` rows) via a SECURITY DEFINER RPC.
+   * Idempotent server-side: concurrent callers for the same sailing all
+   * resolve to the same schedule row instead of creating duplicates.
+   *
+   * Regular customers can't INSERT into `schedules` directly (admin-only
+   * RLS) — this RPC is the sanctioned, narrow exception to that.
+   */
+  async materializeTemplate(templateScheduleId: string): Promise<Schedule> {
+    if (!templateScheduleId.includes("tpl-")) {
+      throw new Error(`"${templateScheduleId}" is not a template schedule id.`);
+    }
+
+    const tpl = findTemplateForId(templateScheduleId);
+    if (!tpl) {
+      throw new Error(`No schedule template matches "${templateScheduleId}".`);
+    }
+    const departureDate = dateFromTemplateId(templateScheduleId);
+
+    const { data, error } = await supabase.rpc("materialize_template_schedule", {
+      p_template_id: tpl.templateId,
+      p_departure_date: departureDate,
+      p_route_name: tpl.routeName,
+      p_origin: tpl.origin,
+      p_destination: tpl.destination,
+      p_departure_time: `${tpl.departureTime}:00`,
+      p_arrival_time: `${tpl.arrivalTime}:00`,
+      p_vehicle_name: tpl.vehicleName,
+      p_vehicle_number: tpl.vehicleNumber,
+      p_price: tpl.price,
+      p_business_price: tpl.businessPrice ?? null,
+    });
+
+    if (error) {
+      throw new Error(`Failed to prepare schedule for booking: ${error.message}`);
+    }
+    return data as Schedule;
+  },
+
   // --- Admin-only writes (protected by RLS on the server) ---
   async create(input: Omit<Schedule, "id" | "created_at" | "updated_at">): Promise<Schedule> {
     const { data, error } = await supabase.from("schedules").insert(input).select().single();
@@ -117,3 +156,14 @@ export const scheduleService = {
     if (error) throw new Error(error.message);
   },
 };
+
+function dateFromTemplateId(id: string): string {
+  const parts = id.split("-");
+  return parts.slice(-3).join("-");
+}
+
+function findTemplateForId(id: string) {
+  const parts = id.split("-");
+  const templateId = parts.slice(0, -3).join("-");
+  return REAL_SCHEDULE_TEMPLATES.find((t) => t.templateId === templateId);
+}

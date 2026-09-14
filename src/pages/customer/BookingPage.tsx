@@ -360,16 +360,68 @@ export function BookingPage() {
     }, 700);
   }
 
+  // useEffect(() => {
+  //   if (!queueRequest || stage === "success" || stage === "failed" || stage === "error") return;
+  //   if (!isDbUuid) return;
+
+  //   const interval = setInterval(async () => {
+  //     try {
+  //       const updated = await bookingQueueService.getById(queueRequest.id);
+  //       if (!updated) return;
+  //       setQueueRequest(updated);
+
+  //       if (updated.status === "waiting") {
+  //         const pos = await bookingQueueService.getQueuePosition(updated.id);
+  //         setQueuePosition(pos);
+  //         setStage("waiting");
+  //       } else if (updated.status === "processing") {
+  //         setStage("processing");
+  //       } else if (updated.status === "completed" && updated.result_message === "SUCCESS") {
+  //         const dbAuthoritativeBooking: Booking = {
+  //           id: updated.booking_id || `bkg-${Date.now().toString(36)}`,
+  //           booking_reference: `BST-${schedule.vehicle_number || "M11"}-${seat.seat_number}`,
+  //           user_id: user?.id || "guest",
+  //           schedule_id: schedule.id,
+  //           seat_id: seat.id,
+  //           booking_status: "confirmed",
+  //           total_amount: totalAmount,
+  //           booked_at: new Date().toISOString(),
+  //           cancelled_at: null,
+  //           cancellation_reason: null,
+  //           created_at: new Date().toISOString(),
+  //           updated_at: new Date().toISOString(),
+  //           schedule,
+  //           seat: {
+  //             ...seat,
+  //             price: totalAmount,
+  //             status: "booked",
+  //           },
+  //         };
+  //         await bookingService.saveBooking(dbAuthoritativeBooking);
+  //         await seatService.lockSeat(schedule.id, seat.seat_number);
+  //         setConfirmedBooking(dbAuthoritativeBooking);
+  //         setStage("success");
+  //         clearInterval(interval);
+  //       } else if (updated.status === "failed" || updated.status === "completed") {
+  //         setStage("failed");
+  //         clearInterval(interval);
+  //       }
+  //     } catch {}
+  //   }, 1000);
+
+  //   return () => clearInterval(interval);
+  // }, [queueRequest?.id, stage, isDbUuid, schedule, seat, totalAmount, user?.id]);
+
   useEffect(() => {
     if (!queueRequest || stage === "success" || stage === "failed" || stage === "error") return;
     if (!isDbUuid) return;
-
+   
     const interval = setInterval(async () => {
       try {
         const updated = await bookingQueueService.getById(queueRequest.id);
         if (!updated) return;
         setQueueRequest(updated);
-
+   
         if (updated.status === "waiting") {
           const pos = await bookingQueueService.getQueuePosition(updated.id);
           setQueuePosition(pos);
@@ -377,40 +429,47 @@ export function BookingPage() {
         } else if (updated.status === "processing") {
           setStage("processing");
         } else if (updated.status === "completed" && updated.result_message === "SUCCESS") {
-          const dbAuthoritativeBooking: Booking = {
-            id: updated.booking_id || `bkg-${Date.now().toString(36)}`,
-            booking_reference: `BST-${schedule.vehicle_number || "M11"}-${seat.seat_number}`,
-            user_id: user?.id || "guest",
-            schedule_id: schedule.id,
-            seat_id: seat.id,
-            booking_status: "confirmed",
-            total_amount: totalAmount,
-            booked_at: new Date().toISOString(),
-            cancelled_at: null,
-            cancellation_reason: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            schedule,
-            seat: {
-              ...seat,
-              price: totalAmount,
-              status: "booked",
-            },
-          };
-          await bookingService.saveBooking(dbAuthoritativeBooking);
-          await seatService.lockSeat(schedule.id, seat.seat_number);
-          setConfirmedBooking(dbAuthoritativeBooking);
-          setStage("success");
+          // The queue processor already created the booking, reserved the
+          // seat, and recorded payment — re-running saveBooking/lockSeat
+          // here would throw, since the seat is no longer 'available'.
+          // Just fetch what the processor already made.
           clearInterval(interval);
+   
+          if (!updated.booking_id) {
+            setErrorMsg("Booking completed but no booking id was returned.");
+            setStage("error");
+            return;
+          }
+   
+          try {
+            const created = await bookingService.getById(updated.booking_id);
+            if (!created) {
+              setErrorMsg("Booking completed but the record could not be found.");
+              setStage("error");
+              return;
+            }
+            setConfirmedBooking(created);
+            setStage("success");
+          } catch (fetchErr: any) {
+            setErrorMsg(fetchErr?.message || "Failed to load the confirmed booking.");
+            setStage("error");
+          }
         } else if (updated.status === "failed" || updated.status === "completed") {
           setStage("failed");
           clearInterval(interval);
         }
-      } catch {}
+      } catch (pollErr: any) {
+        // Surface polling failures instead of silently retrying forever.
+        clearInterval(interval);
+        setErrorMsg(pollErr?.message || "Something went wrong while checking your booking status.");
+        setStage("error");
+      }
     }, 1000);
-
+   
     return () => clearInterval(interval);
   }, [queueRequest?.id, stage, isDbUuid, schedule, seat, totalAmount, user?.id]);
+   
+  
 
   if ((isScheduleLoading || isSeatsLoading) && !state.fromPortName) {
     return (
